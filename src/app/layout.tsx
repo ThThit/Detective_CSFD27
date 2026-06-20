@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { Special_Elite, Courier_Prime } from "next/font/google";
+import { Cinzel_Decorative, Cormorant_Garamond, Special_Elite } from "next/font/google";
 import "./globals.css";
+
+const cinzelDecorative = Cinzel_Decorative({
+  weight: "700",
+  variable: "--font-cinzel-decorative",
+  subsets: ["latin"],
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant-garamond",
+  subsets: ["latin"],
+});
 
 const specialElite = Special_Elite({
   weight: "400",
   variable: "--font-special-elite",
-  subsets: ["latin"],
-});
-
-const courierPrime = Courier_Prime({
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-courier-prime",
   subsets: ["latin"],
 });
 
@@ -26,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${specialElite.variable} ${courierPrime.variable} h-full`}>
+    <html lang="en" className={`${cinzelDecorative.variable} ${cormorantGaramond.variable} ${specialElite.variable} h-full`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

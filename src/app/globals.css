@@ -1,16 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0a0806;
-  --color-foreground: #e8dcc4;
-  --font-display: var(--font-special-elite);
-  --font-mono: var(--font-courier-prime);
+  --color-background: #F3EEE5;
+  --color-foreground: #1C1A17;
+  --font-display: var(--font-cinzel-decorative);
+  --font-serif: var(--font-cormorant-garamond);
+  --font-mono: var(--font-special-elite);
 }
 
 body {
-  background: #0a0806;
-  color: #e8dcc4;
-  font-family: var(--font-courier-prime), 'Courier New', monospace;
+  background: #F3EEE5;
+  color: #1C1A17;
+  font-family: var(--font-cormorant-garamond), Georgia, serif;
   -webkit-font-smoothing: antialiased;
 }
 

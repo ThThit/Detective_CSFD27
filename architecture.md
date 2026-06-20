@@ -7,8 +7,26 @@
 - **Styling:** Tailwind CSS v4
 - **ORM:** Drizzle
 - **Database:** PostgreSQL
-- **Auth:** Microsoft OAuth (MSAL)
-- **Image upload:** Cloudinary
+- **Auth:** Microsoft OAuth (MSAL) + iron-session (encrypted cookie)
+- **Image upload:** Cloudflare R2
+
+---
+
+## Design System
+
+**Fonts:**
+- `Cinzel Decorative 700` — headings, titles, display
+- `Cormorant Garamond 400/600` — body text, serif
+- `Special Elite` — monospace labels, codes, stamps
+
+**Colors:**
+- Background: `#F3EEE5` (parchment)
+- Card/surface: `#E5E0CF` (aged paper)
+- Primary text: `#1C1A17`
+- Muted text: `#7A6A58`, `#A0907E`, `#C4B8A8`
+- Accent (amber): `#A86A2A`
+- Danger: `#8b2020`
+- Success: `#3a6a2a`
 
 ---
 
@@ -16,13 +34,13 @@
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `app/page.tsx` | Landing — event countdown + Microsoft login button; redirect to `/houses` if authenticated |
-| `/login` | `app/(auth)/login/page.tsx` | Login page |
-| `/houses` | `app/(main)/houses/page.tsx` | Houses directory — grid of all 4 houses; onboarding flow (nickname prompt + magic pot) if `user.nickname` is null |
-| `/houses/[house]` | `app/(main)/houses/[house]/page.tsx` | House detail — image, lore, description + full member grid (leaders first) |
-| `/agent` | `app/(main)/agent/page.tsx` | Own profile — view + edit info, upload + crop pic; hints shown as dialog |
-| `/agent/[id]` | `app/(main)/agent/[id]/page.tsx` | Another member's public profile — pic, name, house, social links |
-| `/admin/dashboard` | `app/(main)/admin/dashboard/page.tsx` | Admin only — mentor-pair table with found/not_found/all filter |
+| `/` | `app/page.tsx` | Landing — investigation board hero, countdown, Microsoft login CTA; redirect to `/houses` if authenticated |
+| `/login` | `app/(auth)/login/page.tsx` | Classified access screen — Microsoft SSO prompt |
+| `/houses` | `app/(main)/houses/page.tsx` | House directory — grid of 4 houses; onboarding overlay (nickname + magic pot) if `user.nickname` is null |
+| `/houses/[house]` | `app/(main)/houses/[house]/page.tsx` | House detail — dossier header, lore, member grid (leaders first) |
+| `/agent` | `app/(main)/agent/page.tsx` | Own profile — **Senior view:** edit info, upload pic, mentee + hint cards. **Junior view:** accusation terminal, evidence hints, case solved/expired states |
+| `/agent/[id]` | `app/(main)/agent/[id]/page.tsx` | Public readonly dossier — pic, name, house, social links |
+| `/admin/dashboard` | `app/(main)/admin/dashboard/page.tsx` | Admin only — mentor-pair table with ALL/SOLVED/OPEN filter |
 | `/*` | `app/not-found.tsx` | 404 |
 
 ---
@@ -33,38 +51,39 @@
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
-| `GET` | `/api/auth/login` | — | Redirect to MSAL auth URL |
-| `GET` | `/api/auth/callback` | — | MSAL callback — exchange code, upsert student, set session, redirect |
+| `GET` | `/api/auth/login` | — | Redirect to MSAL authorization URL |
+| `GET` | `/api/auth/callback` | — | Exchange code, upsert student, set iron-session, redirect to `/houses` |
 | `POST` | `/api/auth/complete-registration` | required | Save nickname on first login |
-| `GET` | `/api/auth/me` | required | Current user: profile, hints, mentees, guessCheck, isAdmin |
-| `POST` | `/api/auth/logout` | — | Destroy session |
+| `GET` | `/api/auth/me` | required | Current user: profile, hints, mentee, isFound, isAdmin |
+| `POST` | `/api/auth/logout` | — | Destroy session cookie |
 
 ### `/api/students`
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
-| `GET` | `/api/students` | — | All students; supports `?role=senior\|junior` and `?house=` |
-| `GET` | `/api/students/[id]` | — | Single student — used by `/agent/[id]` |
-| `PATCH` | `/api/students/[id]` | required (self only) | Update profile; Cloudinary upload if `profilePic` is a data URI |
+| `GET` | `/api/students` | — | All students; `?role=senior\|junior\|house_leader` and `?house=` filters |
+| `GET` | `/api/students/[id]` | — | Single student public profile |
+| `PATCH` | `/api/students/[id]` | required (self only) | Update profile; triggers R2 upload if `profilePic` is a data URI |
 
 ### `/api/hints`
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
-| `GET` | `/api/hints` | required | Senior: given hints per mentee. Junior: received hints |
-| `PATCH` | `/api/hints/[id]` | required (senior, before reveal date) | Update single hint content |
+| `GET` | `/api/hints` | required | Senior: all 3 hints for their mentee. Junior: only revealed hints (`revealDate <= now`) |
+| `PATCH` | `/api/hints/[id]` | required (senior, before reveal date) | Update hint content |
+| `DELETE` | `/api/hints/[id]` | required (senior, before reveal date) | Soft-delete hint |
 
 ### `/api/guess`
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
-| `POST` | `/api/guess` | required (junior only) | Submit guess; correct → `isFound = true`; wrong → decrement `lives` |
+| `POST` | `/api/guess` | required (junior only) | Submit guess by student ID; correct → set `pcode.foundAt`; wrong → decrement `student.guessLeft` |
 
 ### `/api/pcodes`
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
-| `GET` | `/api/pcodes` | required | Junior: last-3-digit codes for seniors in same house (lucky draw pool). Admin: full mentor-pair list with `?status=found\|not_found\|all` |
+| `GET` | `/api/pcodes` | required | Junior: last-3-digit codes for seniors in same house (anonymous pool). Admin: full mentor-pair list with `?status=solved\|open\|all` |
 
 ---
 
@@ -79,7 +98,7 @@ src/
 │   │   ├── layout.tsx
 │   │   ├── admin/dashboard/page.tsx
 │   │   ├── agent/
-│   │   │   ├── page.tsx
+│   │   │   ├── page.tsx               # Senior + Junior views in one page
 │   │   │   └── [id]/page.tsx
 │   │   └── houses/
 │   │       ├── page.tsx
@@ -120,31 +139,70 @@ src/
 │       ├── badge.tsx
 │       └── button.tsx
 ├── db/
-│   ├── index.ts
+│   ├── index.ts              # Drizzle + postgres client
 │   ├── schema.sql
-│   └── schema.ts
-└── lib/
-    ├── auth.ts
-    ├── constants/
-    │   └── houses.ts
-    └── utils.ts
+│   └── schema.ts             # student, pcode, hint, mutation_log tables
+├── lib/
+│   ├── auth.ts               # iron-session: getSession, setSession, destroySession
+│   ├── r2.ts                 # Cloudflare R2 upload utility
+│   ├── utils.ts              # cn() helper
+│   └── constants/
+│       └── houses.ts         # House metadata (name, color, tagline, description, heroBg)
+├── hooks/
+└── types/
+    └── index.ts              # Shared types: Student, Hint, Pcode, MeResponse, HouseKey, Role
+middleware.ts                 # Route protection
 ```
 
 ---
 
 ## Houses
 
-| Key | Display Name |
-|---|---|
-| `noir` | Noir |
-| `foxlock` | Foxlock |
-| `tracer` | Tracer |
-| `cipher` | Cipher |
+| Key | Display Name | Primary Color |
+|---|---|---|
+| `evidenceHounds` | Evidence Hounds | `#121358` (navy) |
+| `inferenceSociety` | Inference Society | `#274C27` (forest green) |
+| `cipherFoxes` | Cipher Foxes | `#4C1A17` (dark crimson) |
+| `shadowSleuths` | Shadow Sleuths | `#402561` (deep purple) |
 
 ## Roles
 
-| Role | Description |
+| Value | Description |
 |---|---|
-| `CS25` | Seniors (P'codes) — write hints, have mentees |
-| `CS26` | Juniors (Freshmen) — receive hints, guess mentor |
-| Admin | Hardcoded by student ID — access to `/admin/dashboard` and full `/api/pcodes` |
+| `junior` | CS26 freshmen — receive hints, submit guesses via /agent junior view |
+| `senior` | CS25 — write hints, assigned one junior mentee |
+| `house_leader` | CS25 senior who leads a house — same powers as senior + displayed first in member grid |
+| Admin | Hardcoded by `student.isAdmin` — access to `/admin/dashboard` and full `/api/pcodes` |
+
+## Navigation (main app, post-auth)
+
+Bottom tab bar with 3 tabs:
+
+| Label | Route |
+|---|---|
+| DIVISIONS | `/houses` |
+| AGENT | `/agent` |
+| STATS | `/admin/dashboard` |
+
+## Session
+
+Managed by `iron-session` (encrypted cookie `csfd27_session`). Session shape:
+
+```ts
+{ userId: string; isAdmin: boolean }
+```
+
+## Common Env Vars
+
+```env
+DATABASE_URL=
+AZURE_CLIENT_ID=
+AZURE_TENANT_ID=
+AZURE_REDIRECT_URI=
+SESSION_SECRET=
+R2_ENDPOINT=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET_NAME=
+R2_PUBLIC_URL=
+```
