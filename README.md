@@ -79,7 +79,9 @@ middleware.ts                  # Route protection
    npm install
    ```
 
-2. **Configure environment variables** — create a `.env.local` file:
+2. **Create a PostgreSQL database** — sign up at [neon.tech](https://neon.tech), create a new project, and copy the connection string.
+
+3. **Configure environment variables** — create a `.env.local` file:
 
    ```env
    # Database
@@ -101,13 +103,14 @@ middleware.ts                  # Route protection
    R2_PUBLIC_URL=
    ```
 
-3. **Run database migrations**
+4. **Run database migrations**
 
    ```sh
+   npx drizzle-kit generate
    npx drizzle-kit migrate
    ```
 
-4. **Start dev server**
+5. **Start dev server**
 
    ```sh
    npm run dev
