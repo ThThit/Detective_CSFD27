@@ -30,7 +30,7 @@ export async function GET() {
   const authUrl = `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/oauth2/v2.0/authorize?${params}`;
 
   const response = NextResponse.redirect(authUrl);
-  const cookieOpts = { httpOnly: true, sameSite: 'lax' as const, maxAge: 300, path: '/' };
+  const cookieOpts = { httpOnly: true, sameSite: 'lax' as const, maxAge: 300, path: '/', secure: process.env.NODE_ENV === 'production' };
   response.cookies.set('oauth_state', state, cookieOpts);
   response.cookies.set('oauth_verifier', verifier, cookieOpts);
   return response;

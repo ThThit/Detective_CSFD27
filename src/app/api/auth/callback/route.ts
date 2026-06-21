@@ -54,15 +54,25 @@ export async function GET(request: NextRequest) {
   const graphRes = await fetch("https://graph.microsoft.com/v1.0/me", {
     headers: { Authorization: `Bearer ${tokens.access_token}` },
   });
+  if (!graphRes.ok) {
+    console.error("[auth/callback] graph /me failed:", graphRes.status);
+    return NextResponse.redirect(
+      new URL("/login?error=graph_failed", request.url),
+    );
+  }
   const graphUser = (await graphRes.json()) as {
-    id: string;
     displayName: string;
     mail: string;
     userPrincipalName: string;
   };
 
   const email = graphUser.mail ?? graphUser.userPrincipalName;
-  const studentId = graphUser.id;
+  if (!email) {
+    console.error("[auth/callback] graph /me returned no email");
+    return NextResponse.redirect(
+      new URL("/login?error=graph_failed", request.url),
+    );
+  }
   const displayName = graphUser.displayName;
 
   const [localPart, domain] = email.split("@");
@@ -71,6 +81,8 @@ export async function GET(request: NextRequest) {
       new URL("/login?error=unauthorized_account", request.url),
     );
   }
+
+  const studentId = localPart;
 
   const [existing] = await db
     .select()
@@ -94,7 +106,7 @@ export async function GET(request: NextRequest) {
         email,
         studentId,
         displayName,
-        role: email.startsWith("68") ? "senior" : "junior",
+        role: localPart.startsWith("68") ? "senior" : "junior",
         isAdmin: false,
         house: "noir",
         guessLeft: 3,
