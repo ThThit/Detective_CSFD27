@@ -22,7 +22,7 @@ export async function GET() {
     if (pcodeRow) {
       isFound = pcodeRow.foundAt !== null;
       const hintRows = await db.select().from(hint).where(eq(hint.pcodeId, pcodeRow.id));
-      hints = hintRows.filter((h) => h.revealDate <= new Date()).map(toHint);
+      hints = hintRows.map(toHint).filter((h) => h.isRevealed);
     }
   } else {
     const [pcodeRow] = await db.select().from(pcode).where(eq(pcode.seniorId, user.id));
