@@ -1,3 +1,3 @@
 export default function HousesPage() {
-  return <div />;
+  return <div>logged in</div>;
 }

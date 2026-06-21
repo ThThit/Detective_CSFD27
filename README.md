@@ -4,6 +4,8 @@ A detective-themed mentor-mentee matching game for the CS Department orientation
 
 [Graphic requirements](https://drive.google.com/drive/u/0/folders/1HPvlVPbw57mfDI-eM0wq7FK-sFGMuX0c)
 
+[House(Agency) details](https://docs.google.com/document/d/1mdjW0Ohcxj7ZwRcJ1u5vF6GLwnq5VW_YXmOc-sYLwn0/edit?tab=t.0)
+
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
@@ -128,3 +130,10 @@ middleware.ts                  # Route protection
 | Dev 7 | Thu Htin Thit | [@ThThit](https://github.com/ThThit) | Admin & Shared UI (button, badge, navbar, layout, admin dashboard) |
 
 See `tasks/dev[N].md` for each dev's detailed spec.
+
+## Docs
+
+Additional documentation lives in the `docs/` folder:
+
+- [`docs/architecture.md`](docs/architecture.md) — system architecture overview
+- [`docs/auth-flow.md`](docs/auth-flow.md) — Microsoft OAuth + PKCE flow, session management, and error states
