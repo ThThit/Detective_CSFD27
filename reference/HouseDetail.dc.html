@@ -174,19 +174,19 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{
   &quot;$preview&quot;: { &quot;width&quot;: 390, &quot;height&quot;: 844 },
-  &quot;house&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;inferenceSociety&quot;, &quot;options&quot;: [&quot;evidenceHounds&quot;,&quot;inferenceSociety&quot;,&quot;cipherFoxes&quot;,&quot;shadowSleuths&quot;], &quot;tsType&quot;: &quot;string&quot; }
+  &quot;house&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;noir&quot;, &quot;options&quot;: [&quot;tracer&quot;,&quot;noir&quot;,&quot;foxlock&quot;,&quot;cipher&quot;], &quot;tsType&quot;: &quot;string&quot; }
 }">
 class Component extends DCLogic {
   static HD = {
-    evidenceHounds:  { name:'Evidence Hounds',  label:'EVIDENCE HOUNDS',  color:'#121358', accent:'#F0D8A1', rgb:[18,19,88],    tagline:'"Follow every trace. Leave no clue unexamined."',      desc:'Evidence Hounds operate on fact alone. They catalogue, cross-reference and pursue every lead with methodical rigour. Where others theorise, Hounds verify.', members:28, leaders:[{name:'Apirak C.',alias:'Spectre'},{name:'Sirada P.',alias:'Shadow'}],   ops:[{name:'Dome T.',alias:'Slate'},{name:'Fah N.',alias:'Raven'},{name:'Beam S.',alias:'Dusk'},{name:'June P.',alias:'Ash'}] },
-    inferenceSociety:{ name:'Inference Society', label:'INFERENCE SOCIETY', color:'#274C27', accent:'#E7C68E', rgb:[39,76,39],   tagline:'"Reason is the finest instrument of detection."',        desc:'The Inference Society prizes deductive logic above all. Members build airtight chains of reasoning from the smallest fragments — a glance, a pause, a misplaced word.', members:31, leaders:[{name:'Wanchanok P.',alias:'Oracle'},{name:'Teerasak M.',alias:'Ridley'}], ops:[{name:'Napat S.',alias:'Ghost'},{name:'Ploy W.',alias:'Lynx'},{name:'Mint C.',alias:'Viper'},{name:'Arm P.',alias:'Onyx'}] },
-    cipherFoxes:     { name:'Cipher Foxes',      label:'CIPHER FOXES',     color:'#4C1A17', accent:'#AE7950', rgb:[76,26,23],    tagline:'"Every message hides a deeper truth."',                 desc:'Cipher Foxes thrive in encrypted territory. Operatives decode hidden signals, crack concealed patterns, and find meaning buried in plain sight.', members:29, leaders:[{name:'Pimchanok R.',alias:'Vex'},{name:'Kantapat N.',alias:'Wraith'}],    ops:[{name:'Mod S.',alias:'Flash'},{name:'Ake T.',alias:'Bolt'},{name:'Joy P.',alias:'Trace'},{name:'Kwan C.',alias:'Mark'}] },
-    shadowSleuths:   { name:'Shadow Sleuths',    label:'SHADOW SLEUTHS',   color:'#402561', accent:'#ACA2B3', rgb:[64,37,97],    tagline:'"In the dark, the sharpest minds see clearest."',       desc:'Shadow Sleuths move unseen. Masters of patience and observation, they watch from the margins until the precise moment to act.', members:26, leaders:[{name:'Thanaphat K.',alias:'Nexus'},{name:'Nisa P.',alias:'Key'}],          ops:[{name:'Bank A.',alias:'Token'},{name:'Earn C.',alias:'Byte'},{name:'Pim T.',alias:'Hex'},{name:'Top N.',alias:'Null'}] },
+    tracer:  { name:'Tracer - Evidence Tracker',  label:'EVIDENCE HOUNDS',  color:'#121358', accent:'#F0D8A1', rgb:[18,19,88],    tagline:'"Follow every trace. Leave no clue unexamined."',      desc:'Tracer - Evidence Tracker operate on fact alone. They catalogue, cross-reference and pursue every lead with methodical rigour. Where others theorise, Hounds verify.', members:28, leaders:[{name:'Apirak C.',alias:'Spectre'},{name:'Sirada P.',alias:'Shadow'}],   ops:[{name:'Dome T.',alias:'Slate'},{name:'Fah N.',alias:'Raven'},{name:'Beam S.',alias:'Dusk'},{name:'June P.',alias:'Ash'}] },
+    noir:{ name:'Noir - Shadow Spy', label:'INFERENCE SOCIETY', color:'#274C27', accent:'#E7C68E', rgb:[39,76,39],   tagline:'"Reason is the finest instrument of detection."',        desc:'The Noir - Shadow Spy prizes deductive logic above all. Members build airtight chains of reasoning from the smallest fragments — a glance, a pause, a misplaced word.', members:31, leaders:[{name:'Wanchanok P.',alias:'Oracle'},{name:'Teerasak M.',alias:'Ridley'}], ops:[{name:'Napat S.',alias:'Ghost'},{name:'Ploy W.',alias:'Lynx'},{name:'Mint C.',alias:'Viper'},{name:'Arm P.',alias:'Onyx'}] },
+    foxlock:     { name:'Foxlock - Sly Messenger',      label:'CIPHER FOXES',     color:'#4C1A17', accent:'#AE7950', rgb:[76,26,23],    tagline:'"Every message hides a deeper truth."',                 desc:'Foxlock - Sly Messenger thrive in encrypted territory. Operatives decode hidden signals, crack concealed patterns, and find meaning buried in plain sight.', members:29, leaders:[{name:'Pimchanok R.',alias:'Vex'},{name:'Kantapat N.',alias:'Wraith'}],    ops:[{name:'Mod S.',alias:'Flash'},{name:'Ake T.',alias:'Bolt'},{name:'Joy P.',alias:'Trace'},{name:'Kwan C.',alias:'Mark'}] },
+    cipher:   { name:'Cipher - Clue Analyst',    label:'SHADOW SLEUTHS',   color:'#402561', accent:'#ACA2B3', rgb:[64,37,97],    tagline:'"In the dark, the sharpest minds see clearest."',       desc:'Cipher - Clue Analyst move unseen. Masters of patience and observation, they watch from the margins until the precise moment to act.', members:26, leaders:[{name:'Thanaphat K.',alias:'Nexus'},{name:'Nisa P.',alias:'Key'}],          ops:[{name:'Bank A.',alias:'Token'},{name:'Earn C.',alias:'Byte'},{name:'Pim T.',alias:'Hex'},{name:'Top N.',alias:'Null'}] },
   };
 
   renderVals() {
-    const key = (this.props.house || 'inferenceSociety');
-    const d = Component.HD[key] || Component.HD.inferenceSociety;
+    const key = (this.props.house || 'noir');
+    const d = Component.HD[key] || Component.HD.noir;
     const [r, g, b] = d.rgb;
     const rgba = a => `rgba(${r},${g},${b},${a})`;
     const c = d.color;
@@ -194,10 +194,10 @@ class Component extends DCLogic {
     return {
       houseName: d.name, houseLabel: d.label, houseTagline: d.tagline, houseDesc: d.desc,
       houseMemberCount: d.members,
-      isEvidenceHounds:  key === 'evidenceHounds',
-      isInferenceSociety:key === 'inferenceSociety',
-      isCipherFoxes:     key === 'cipherFoxes',
-      isShadowSleuths:   key === 'shadowSleuths',
+      isEvidenceHounds:  key === 'tracer',
+      isInferenceSociety:key === 'noir',
+      isCipherFoxes:     key === 'foxlock',
+      isShadowSleuths:   key === 'cipher',
       leader1Name: d.leaders[0].name, leader1Alias: d.leaders[0].alias,
       leader2Name: d.leaders[1].name, leader2Alias: d.leaders[1].alias,
       m1name: d.ops[0].name, m1alias: d.ops[0].alias,

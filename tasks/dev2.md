@@ -29,52 +29,53 @@ Own the first-contact experience: the public landing page and the onboarding flo
 House primary colors:
 | House | Key | Color |
 |---|---|---|
-| Evidence Hounds | `evidenceHounds` | `#121358` (navy) |
-| Inference Society | `inferenceSociety` | `#274C27` (forest green) |
-| Cipher Foxes | `cipherFoxes` | `#4C1A17` (dark crimson) |
-| Shadow Sleuths | `shadowSleuths` | `#402561` (deep purple) |
+| Tracer - Evidence Tracker | `tracer` | `#121358` (navy) |
+| Noir - Shadow Spy | `noir` | `#274C27` (forest green) |
+| Foxlock - Sly Messenger | `foxlock` | `#4C1A17` (dark crimson) |
+| Cipher - Clue Analyst | `cipher` | `#402561` (deep purple) |
 
 ---
 
 ## `src/lib/constants/houses.ts`
 
 ```ts
-export const HOUSES = {
-  evidenceHounds: {
-    name: 'Evidence Hounds',
+export const HOUSE_META = {
+  tracer: {
+    name: 'Tracer',
+    tagline: 'Evidence Tracker',
     color: '#121358',
     rgb: [18, 19, 88] as const,
-    tagline: 'Follow the trail of proof',
-    desc: 'Evidence Hounds leave no clue unexamined...',
+    desc: 'Tracer - Evidence Tracker leave no clue unexamined...',
     heroBg: '#0d0e2e',
   },
-  inferenceSociety: {
-    name: 'Inference Society',
+  noir: {
+    name: 'Noir',
+    tagline: 'Shadow Spy',
     color: '#274C27',
     rgb: [39, 76, 39] as const,
-    tagline: 'Reason from the shadows',
-    desc: 'Inference Society connects what others overlook...',
+    desc: 'Noir - Shadow Spy connects what others overlook...',
     heroBg: '#162416',
   },
-  cipherFoxes: {
-    name: 'Cipher Foxes',
+  foxlock: {
+    name: 'Foxlock',
+    tagline: 'Sly Messenger',
     color: '#4C1A17',
     rgb: [76, 26, 23] as const,
-    tagline: 'Crack the code, catch the quarry',
-    desc: 'Cipher Foxes thrive where logic meets mystery...',
+    desc: 'Foxlock - Sly Messenger thrive where logic meets mystery...',
     heroBg: '#2a0f0d',
   },
-  shadowSleuths: {
-    name: 'Shadow Sleuths',
+  cipher: {
+    name: 'Cipher',
+    tagline: 'Clue Analyst',
     color: '#402561',
     rgb: [64, 37, 97] as const,
-    tagline: 'Operate unseen, strike precise',
-    desc: 'Shadow Sleuths move through the margins...',
+    desc: 'Cipher - Clue Analyst move through the margins...',
     heroBg: '#261540',
   },
 } as const;
 
-export type HouseKey = keyof typeof HOUSES;
+export const HOUSES = ['noir', 'foxlock', 'tracer', 'cipher'] as const;
+export type House = (typeof HOUSES)[number];
 ```
 
 ---
@@ -144,10 +145,10 @@ Design from `reference/Houses.dc.html` house cards:
 - Click navigates to `/houses/[houseKey]`
 
 House icons/emblems (reference for each):
-- **Evidence Hounds**: magnifying glass or paw print
-- **Inference Society**: deduction/logic symbol (Σ or tree)
-- **Cipher Foxes**: fox or cipher wheel
-- **Shadow Sleuths**: eye or shadow figure
+- **Tracer**: magnifying glass or paw print
+- **Noir**: deduction/logic symbol (Σ or tree)
+- **Foxlock**: fox or cipher wheel
+- **Cipher**: eye or shadow figure
 
 ---
 

@@ -20,10 +20,10 @@ A detective-themed mentor-mentee matching game for the CS Department orientation
 
 | Key | House | Color | Tagline |
 |-----|-------|-------|---------|
-| `evidenceHounds` | Evidence Hounds | Navy `#121358` | Follow the trail of proof |
-| `inferenceSociety` | Inference Society | Forest green `#274C27` | Reason from the shadows |
-| `cipherFoxes` | Cipher Foxes | Dark crimson `#4C1A17` | Crack the code, catch the quarry |
-| `shadowSleuths` | Shadow Sleuths | Deep purple `#402561` | Operate unseen, strike precise |
+| `tracer` | Tracer - Evidence Tracker | Navy `#121358` | Follow the trail of proof |
+| `noir` | Noir - Shadow Spy | Forest green `#274C27` | Reason from the shadows |
+| `foxlock` | Foxlock - Sly Messenger | Dark crimson `#4C1A17` | Crack the code, catch the quarry |
+| `cipher` | Cipher - Clue Analyst | Deep purple `#402561` | Operate unseen, strike precise |
 
 ## Design System
 
