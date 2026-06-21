@@ -1,40 +1,48 @@
-import { getIronSession, IronSession } from 'iron-session';
-import { cookies } from 'next/headers';
+import { SignJWT, jwtVerify } from "jose";
+import { cookies } from "next/headers";
 
 export type SessionData = {
   userId: string;
   isAdmin: boolean;
 };
 
-const sessionOptions = {
-  cookieName: 'csfd27_session',
-  password: process.env.SESSION_SECRET!,
-  cookieOptions: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    sameSite: 'lax' as const,
-  },
+const COOKIE_NAME = "csfd27";
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  maxAge: 60 * 60 * 24 * 7, // 7 days
+  path: "/",
 };
 
-export async function getSession(): Promise<IronSession<SessionData>> {
+export async function setSession(data: SessionData): Promise<void> {
+  const token = await new SignJWT(data)
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("7d")
+    .sign(secret);
+
   const cookieStore = await cookies();
-  return getIronSession<SessionData>(cookieStore, sessionOptions);
+  cookieStore.set(COOKIE_NAME, token, cookieOptions);
 }
 
 export async function getSessionData(): Promise<SessionData | null> {
-  const session = await getSession();
-  if (!session.userId) return null;
-  return { userId: session.userId, isAdmin: session.isAdmin };
-}
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
+  if (!token) return null;
 
-export async function setSession(data: SessionData): Promise<void> {
-  const session = await getSession();
-  session.userId = data.userId;
-  session.isAdmin = data.isAdmin;
-  await session.save();
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return {
+      userId: payload.userId as string,
+      isAdmin: payload.isAdmin as boolean,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function destroySession(): Promise<void> {
-  const session = await getSession();
-  session.destroy();
+  const cookieStore = await cookies();
+  cookieStore.delete(COOKIE_NAME);
 }
