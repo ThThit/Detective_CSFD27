@@ -94,7 +94,7 @@ Scopes: `['openid', 'profile', 'email', 'User.Read']`
 Student defaults on first insert:
 - `role: 'junior'`
 - `isAdmin: false`
-- `house: 'evidenceHounds'` (placeholder — admin or onboarding flow assigns the real house)
+- `house: 'tracer'` (placeholder — admin or onboarding flow assigns the real house)
 - `guessLeft: 3`
 
 ---
@@ -114,7 +114,7 @@ Response shape:
   displayName: string;
   nickname: string | null;
   profileUrl: string | null;
-  house: 'evidenceHounds' | 'inferenceSociety' | 'cipherFoxes' | 'shadowSleuths';
+  house: 'tracer' | 'noir' | 'foxlock' | 'cipher';
   guessLeft: number;
   instagram: string | null;
   discord: string | null;
@@ -193,4 +193,4 @@ SESSION_SECRET=                # min 32 random characters
 
 - All API routes that need the current user should import `getSession` from `src/lib/auth.ts`
 - Do not expose `isAdmin` or session details to the client beyond what `GET /api/auth/me` returns
-- The `house` field is set to `evidenceHounds` by default on callback — admin assigns real houses; do not hardcode any house logic here
+- The `house` field is set to `tracer` by default on callback — admin assigns real houses; do not hardcode any house logic here

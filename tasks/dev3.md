@@ -30,7 +30,7 @@ Own the house detail page, the public member profile, and the **readonly** versi
 - Fonts: `Cinzel Decorative` (headings), `Cormorant Garamond` (body), `Special Elite` (labels/codes)
 
 House primary colors (import from `src/lib/constants/houses.ts`):
-- Evidence Hounds `#121358` · Inference Society `#274C27` · Cipher Foxes `#4C1A17` · Shadow Sleuths `#402561`
+- Tracer `#121358` · Noir `#274C27` · Foxlock `#4C1A17` · Cipher `#402561`
 
 ---
 
@@ -40,7 +40,7 @@ Returns all non-deleted students.
 
 Query params:
 - `?role=senior|junior|house_leader` — filter by role
-- `?house=evidenceHounds|inferenceSociety|cipherFoxes|shadowSleuths` — filter by house
+- `?house=tracer|noir|foxlock|cipher` — filter by house
 
 Response: array of student objects (exclude sensitive fields: no `guessLeft` for others, no `isAdmin`).
 

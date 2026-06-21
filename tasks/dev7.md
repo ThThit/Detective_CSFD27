@@ -55,17 +55,17 @@ Font: `Special Elite` monospace, letter-spacing 2px, uppercase.
 
 ```ts
 type BadgeProps = {
-  house?: 'evidenceHounds' | 'inferenceSociety' | 'cipherFoxes' | 'shadowSleuths';
+  house?: 'tracer' | 'noir' | 'foxlock' | 'cipher';
   role?: 'junior' | 'senior' | 'house_leader';
   children?: React.ReactNode;
 };
 ```
 
 House badge: house primary color border + text + faint bg tint.
-- `evidenceHounds` → `#121358`
-- `inferenceSociety` → `#274C27`
-- `cipherFoxes` → `#4C1A17`
-- `shadowSleuths` → `#402561`
+- `tracer` → `#121358`
+- `noir` → `#274C27`
+- `foxlock` → `#4C1A17`
+- `cipher` → `#402561`
 
 Role badge: `senior`/`house_leader` → red tint `rgba(139,32,32,0.1)`; `junior` → muted `rgba(122,106,88,0.12)`.
 

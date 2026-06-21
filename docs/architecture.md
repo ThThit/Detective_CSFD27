@@ -160,10 +160,10 @@ middleware.ts                 # Route protection
 
 | Key | Display Name | Primary Color |
 |---|---|---|
-| `evidenceHounds` | Evidence Hounds | `#121358` (navy) |
-| `inferenceSociety` | Inference Society | `#274C27` (forest green) |
-| `cipherFoxes` | Cipher Foxes | `#4C1A17` (dark crimson) |
-| `shadowSleuths` | Shadow Sleuths | `#402561` (deep purple) |
+| `tracer` | Tracer - Evidence Tracker | `#121358` (navy) |
+| `noir` | Noir - Shadow Spy | `#274C27` (forest green) |
+| `foxlock` | Foxlock - Sly Messenger | `#4C1A17` (dark crimson) |
+| `cipher` | Cipher - Clue Analyst | `#402561` (deep purple) |
 
 ## Roles
 
