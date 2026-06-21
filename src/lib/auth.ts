@@ -33,10 +33,9 @@ export async function getSessionData(): Promise<SessionData | null> {
 
   try {
     const { payload } = await jwtVerify(token, secret);
-    return {
-      userId: payload.userId as string,
-      isAdmin: payload.isAdmin as boolean,
-    };
+    const { userId, isAdmin } = payload;
+    if (typeof userId !== 'string' || !userId || typeof isAdmin !== 'boolean') return null;
+    return { userId, isAdmin };
   } catch {
     return null;
   }

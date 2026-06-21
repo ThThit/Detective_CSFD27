@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { student, pcode, hint } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getSessionData } from '@/lib/auth';
+import { toPublicStudent, toHint } from '@/lib/mappers';
 import type { MeResponse, PublicStudent, Hint } from '@/types';
 
 export async function GET() {
@@ -21,47 +22,16 @@ export async function GET() {
     if (pcodeRow) {
       isFound = pcodeRow.foundAt !== null;
       const hintRows = await db.select().from(hint).where(eq(hint.pcodeId, pcodeRow.id));
-      hints = hintRows.map((h) => ({
-        id: h.id,
-        pcodeId: h.pcodeId,
-        content: h.content,
-        revealDate: h.revealDate.toISOString(),
-        isRevealed: h.revealDate <= new Date(),
-        createdAt: h.createdAt.toISOString(),
-        updatedAt: h.updatedAt.toISOString(),
-      }));
+      hints = hintRows.filter((h) => h.revealDate <= new Date()).map(toHint);
     }
   } else {
     const [pcodeRow] = await db.select().from(pcode).where(eq(pcode.seniorId, user.id));
     if (pcodeRow) {
+      isFound = pcodeRow.foundAt !== null;
       const [menteeRow] = await db.select().from(student).where(eq(student.id, pcodeRow.juniorId));
-      if (menteeRow) {
-        mentee = {
-          id: menteeRow.id,
-          studentId: menteeRow.studentId,
-          role: menteeRow.role as PublicStudent['role'],
-          displayName: menteeRow.displayName,
-          nickname: menteeRow.nickname,
-          profileUrl: menteeRow.profileUrl,
-          house: menteeRow.house as PublicStudent['house'],
-          instagram: menteeRow.instagram,
-          discord: menteeRow.discord,
-          line: menteeRow.line,
-          nationality: menteeRow.nationality,
-          createdAt: menteeRow.createdAt.toISOString(),
-          updatedAt: menteeRow.updatedAt.toISOString(),
-        };
-      }
+      if (menteeRow) mentee = toPublicStudent(menteeRow);
       const hintRows = await db.select().from(hint).where(eq(hint.pcodeId, pcodeRow.id));
-      hints = hintRows.map((h) => ({
-        id: h.id,
-        pcodeId: h.pcodeId,
-        content: h.content,
-        revealDate: h.revealDate.toISOString(),
-        isRevealed: h.revealDate <= new Date(),
-        createdAt: h.createdAt.toISOString(),
-        updatedAt: h.updatedAt.toISOString(),
-      }));
+      hints = hintRows.map(toHint);
     }
   }
 
