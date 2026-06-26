@@ -1,4 +1,4 @@
-export type HouseKey = 'evidenceHounds' | 'inferenceSociety' | 'cipherFoxes' | 'shadowSleuths';
+export type HouseKey = 'noir' | 'foxlock' | 'tracer' | 'cipher';
 export type Role = 'junior' | 'senior' | 'house_leader';
 
 export type Student = {
