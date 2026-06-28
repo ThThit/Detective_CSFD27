@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const navLinks = [
   { label: "DIVISIONS", href: "/houses" },
   { label: "STATS", href: "/admin/dashboard" },
-  { label: "ME", href: "/agent/me" },
+  { label: "ME", href: "/agent" },
 ];
 
 function BottomTabs() {

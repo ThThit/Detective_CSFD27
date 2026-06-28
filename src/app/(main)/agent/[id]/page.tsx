@@ -4,6 +4,7 @@ import { student } from "@/db/schema";
 import { getSessionData } from "@/lib/auth";
 import { toPublicStudent } from "@/lib/mappers";
 import { and, eq, isNull } from "drizzle-orm";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 type AgentProfilePageProps = {
@@ -44,28 +45,34 @@ export default async function AgentProfilePage({
   return (
     <div className="min-h-screen bg-surface flex flex-col font-serif">
       <main className="flex-1 overflow-y-auto p-5">
-        <ProfileCard
-          student={publicStudent}
-          onEdit={isMe ? () => {} : undefined}
-        />
+        <ProfileCard student={publicStudent} />
 
-        {!isMe && (
-          <>
-            <div className="mx-auto max-w-content my-8 bg-background border border-dark/8 p-5 text-center relative overflow-hidden">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[5deg] font-display text-[30px] whitespace-nowrap pointer-events-none tracking-[4px] text-accent/5">
-                ON FILE
-              </div>
-              <div className="text-[8px] text-muted-fg tracking-[3px] mb-1.5 font-mono relative">
-                CASE FILE REFERENCE
-              </div>
-              <div className="font-mono text-[13px] text-muted tracking-[2px] relative">
-                {caseNumber}
-              </div>
-              <div className="mt-2.5 text-[8px] text-subtle tracking-[1px] font-mono relative">
-                ISSUED BY CS DEPARTMENT · CONFIDENTIAL
-              </div>
+        {isMe ? (
+          <div className="mx-auto max-w-content my-4 bg-background border border-danger/15 px-3.5 py-3 flex items-center gap-2.5">
+            <div className="w-[5px] h-[5px] rounded-full bg-danger shrink-0" />
+            <div className="text-[13px] text-muted leading-snug">
+              This is a read-only dossier. To edit your own profile, navigate to{" "}
+              <Link href="/agent" className="text-accent">
+                /agent
+              </Link>
+              .
             </div>
-          </>
+          </div>
+        ) : (
+          <div className="mx-auto max-w-content my-8 bg-background border border-dark/8 p-5 text-center relative overflow-hidden">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-[5deg] font-display text-[30px] whitespace-nowrap pointer-events-none tracking-[4px] text-accent/5">
+              ON FILE
+            </div>
+            <div className="text-[8px] text-muted-fg tracking-[3px] mb-1.5 font-mono relative">
+              CASE FILE REFERENCE
+            </div>
+            <div className="font-mono text-[13px] text-muted tracking-[2px] relative">
+              {caseNumber}
+            </div>
+            <div className="mt-2.5 text-[8px] text-subtle tracking-[1px] font-mono relative">
+              ISSUED BY CS DEPARTMENT · CONFIDENTIAL
+            </div>
+          </div>
         )}
       </main>
     </div>
