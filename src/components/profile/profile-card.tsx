@@ -3,12 +3,27 @@
 import { HOUSE_META } from "@/lib/constants/houses";
 import type { PublicStudent } from "@/types";
 
+type ProfileCardStudent = Pick<
+  PublicStudent,
+  | "id"
+  | "studentId"
+  | "role"
+  | "displayName"
+  | "nickname"
+  | "profileUrl"
+  | "house"
+  | "instagram"
+  | "discord"
+  | "line"
+  | "nationality"
+>;
+
 type ProfileCardProps = {
-  student: PublicStudent;
+  student: ProfileCardStudent;
   onEdit?: () => void;
 };
 
-const roleLabels: Record<PublicStudent["role"], string> = {
+const roleLabels: Record<ProfileCardStudent["role"], string> = {
   junior: "JUNIOR",
   senior: "SENIOR",
   house_leader: "HOUSE LEADER",
@@ -82,7 +97,7 @@ function ContactRow({
   );
 }
 
-function ProfilePhoto({ student }: { student: PublicStudent }) {
+function ProfilePhoto({ student }: { student: ProfileCardStudent }) {
   return (
     <div style={{ position: "relative", flexShrink: 0 }}>
       <div
