@@ -1,93 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ProfileCard } from "@/components/profile/profile-card";
+import { ProfileCard } from "@/components/profile/ProfileCard";
 import type { MeResponse } from "@/types";
-
-function BottomTabs() {
-  return (
-    <nav
-      style={{
-        display: "flex",
-        background: "#E5E0CF",
-        borderTop: "1px solid rgba(47,36,31,0.1)",
-        flexShrink: 0,
-        paddingBottom: 34,
-      }}
-    >
-      <Link
-        href="/houses"
-        style={{
-          flex: 1,
-          padding: "9px 0 10px",
-          textAlign: "center",
-          textDecoration: "none",
-          borderRight: "1px solid rgba(47,36,31,0.06)",
-          opacity: 0.4,
-          display: "block",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 7,
-            color: "#7A6A58",
-            letterSpacing: 1.5,
-            fontFamily: "var(--font-special-elite), monospace",
-          }}
-        >
-          DIVISIONS
-        </div>
-      </Link>
-      <Link
-        href="/agent"
-        style={{
-          flex: 1,
-          padding: "9px 0 10px",
-          textAlign: "center",
-          textDecoration: "none",
-          borderRight: "1px solid rgba(47,36,31,0.06)",
-          display: "block",
-        }}
-      >
-        <div style={{ width: 14, height: 1.5, background: "#A86A2A", margin: "0 auto 4px" }} />
-        <div
-          style={{
-            fontSize: 7,
-            color: "#A86A2A",
-            letterSpacing: 1.5,
-            fontFamily: "var(--font-special-elite), monospace",
-          }}
-        >
-          AGENT
-        </div>
-      </Link>
-      <Link
-        href="/admin/dashboard"
-        style={{
-          flex: 1,
-          padding: "9px 0 10px",
-          textAlign: "center",
-          textDecoration: "none",
-          opacity: 0.4,
-          display: "block",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 7,
-            color: "#7A6A58",
-            letterSpacing: 1.5,
-            fontFamily: "var(--font-special-elite), monospace",
-          }}
-        >
-          STATS
-        </div>
-      </Link>
-    </nav>
-  );
-}
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 function toProfileStudent(user: MeResponse) {
   return {
@@ -119,7 +35,6 @@ export default function AgentPage() {
           router.replace("/login");
           return;
         }
-
         const me: MeResponse = await res.json();
         if (!ignore) setUser(me);
       })
@@ -133,75 +48,17 @@ export default function AgentPage() {
   }, [router]);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#F3EEE5",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "var(--font-cormorant-garamond), serif",
-      }}
-    >
-      <header
-        style={{
-          padding: "10px 20px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderBottom: "1px solid rgba(47,36,31,0.14)",
-          flexShrink: 0,
-          background: "#E5E0CF",
-        }}
-      >
-        <Link
-          href="/houses"
-          style={{
-            fontFamily: "var(--font-cinzel-decorative), serif",
-            fontSize: 15,
-            color: "#2F241F",
-            letterSpacing: 1,
-            textDecoration: "none",
-          }}
-        >
-          CSFD27
-        </Link>
-        <button
-          type="button"
-          aria-label="Edit file placeholder"
-          style={{
-            padding: "5px 12px",
-            border: "1px solid rgba(168,106,42,0.35)",
-            background: "rgba(168,106,42,0.08)",
-            fontSize: 9,
-            color: "#A86A2A",
-            letterSpacing: 2,
-            cursor: "default",
-            fontFamily: "var(--font-special-elite), monospace",
-          }}
-        >
-          EDIT FILE
-        </button>
-      </header>
-
-      <main style={{ flex: 1, overflowY: "auto" }}>
+    <div className="min-h-screen bg-background flex flex-col font-serif">
+      <main className="flex-1 overflow-y-auto">
         {loading && (
-          <div
-            style={{
-              margin: 16,
-              background: "#E5E0CF",
-              border: "1px solid rgba(47,36,31,0.08)",
-              padding: 20,
-              color: "#7A6A58",
-              fontSize: 13,
-              letterSpacing: 2,
-              fontFamily: "var(--font-special-elite), monospace",
-            }}
-          >
+          <div className="m-4 bg-surface border border-dark/8 p-5 text-muted text-[13px] tracking-[2px] font-mono">
             RETRIEVING AGENT DOSSIER...
           </div>
         )}
 
-        {!loading && user && <ProfileCard student={toProfileStudent(user)} />}
+        {!loading && user && (
+          <ProfileCard student={toProfileStudent(user)} onEdit={() => {}} />
+        )}
 
         {/* === DEV 4: Edit mode controls (senior/junior shared) === */}
 
@@ -209,8 +66,6 @@ export default function AgentPage() {
 
         {/* === DEV 6: Accusation terminal — juniors only === */}
       </main>
-
-      <BottomTabs />
     </div>
   );
 }
