@@ -66,7 +66,7 @@ function ProfilePhoto({ student }: { student: ProfileCardStudent }) {
   return (
     <div className="relative shrink-0">
       <div
-        className="w-20 flex items-center justify-center relative overflow-hidden bg-background border-2 border-accent/30"
+        className="w-20 flex items-center justify-center relative overflow-hidden bg-background border-2 border-accent"
         style={{
           height: 96,
           backgroundImage: student.profileUrl
@@ -84,10 +84,10 @@ function ProfilePhoto({ student }: { student: ProfileCardStudent }) {
             PHOTO
           </div>
         )}
-        <div className="absolute top-[3px] left-[3px] w-2 h-2 border-t-[1.5px] border-l-[1.5px] border-accent/45" />
-        <div className="absolute top-[3px] right-[3px] w-2 h-2 border-t-[1.5px] border-r-[1.5px] border-accent/45" />
-        <div className="absolute bottom-[3px] left-[3px] w-2 h-2 border-b-[1.5px] border-l-[1.5px] border-accent/45" />
-        <div className="absolute bottom-[3px] right-[3px] w-2 h-2 border-b-[1.5px] border-r-[1.5px] border-accent/45" />
+        <div className="absolute top-[3px] left-[3px] w-2 h-2 border-t-[1.5px] border-l-[1.5px] border-accent" />
+        <div className="absolute top-[3px] right-[3px] w-2 h-2 border-t-[1.5px] border-r-[1.5px] border-accent" />
+        <div className="absolute bottom-[3px] left-[3px] w-2 h-2 border-b-[1.5px] border-l-[1.5px] border-accent" />
+        <div className="absolute bottom-[3px] right-[3px] w-2 h-2 border-b-[1.5px] border-r-[1.5px] border-accent" />
       </div>
       <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-success px-1.5 py-0.5 whitespace-nowrap">
         <div className="text-[6px] text-[#d0f0c0] tracking-[2px] font-mono">
@@ -104,7 +104,7 @@ export function ProfileCard({ student, onEdit }: ProfileCardProps) {
   const nationality = student.nationality?.trim() || "Nationality undisclosed";
 
   return (
-    <section className="bg-surface border-b border-dark/10d pb-5 relative overflow-hidden max-w-content mx-auto">
+    <section className="bg-surface relative overflow-hidden max-w-content mx-auto">
       <div className="absolute top-1/2 -right-5 -translate-y-1/2 -rotate-[35deg] font-display text-[40px] whitespace-nowrap pointer-events-none tracking-[4px] text-accent/5">
         CLASSIFIED
       </div>
