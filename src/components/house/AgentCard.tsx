@@ -30,29 +30,12 @@ export function AgentCard({ student, className, delayMs = 0 }: AgentCardProps) {
   return (
     <Link
       href={`/agent/${student.id}`}
-      className={cn("block", className)}
-      style={{
-        background: "#E5E0CF",
-        border: "1px solid rgba(47,36,31,0.1)",
-        padding: 12,
-        textDecoration: "none",
-        color: "inherit",
-        animation: `fadeIn 0.4s ease-out ${delayMs}ms both`,
-      }}
+      className={cn("block no-underline text-inherit p-3 bg-surface border border-dark/10", className)}
+      style={{ animation: `fadeIn 0.4s ease-out ${delayMs}ms both` }}
     >
       <div
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: "50%",
-          background: "#F3EEE5",
-          border: `1px solid rgba(${r},${g},${b},0.2)`,
-          marginBottom: 8,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-        }}
+        className="w-9 h-9 rounded-full mb-2 flex items-center justify-center overflow-hidden shrink-0 bg-background"
+        style={{ border: `1px solid rgba(${r},${g},${b},0.2)` }}
       >
         {student.profileUrl ? (
           <Image
@@ -61,62 +44,29 @@ export function AgentCard({ student, className, delayMs = 0 }: AgentCardProps) {
             width={36}
             height={36}
             unoptimized
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            className="w-full h-full object-cover"
           />
         ) : (
-          <div
-            style={{
-              fontSize: 6,
-              color: "#A0907E",
-              fontFamily: "var(--font-special-elite), monospace",
-              letterSpacing: 1,
-            }}
-          >
-            PHOTO
-          </div>
+          <div className="text-[6px] text-muted-fg font-mono tracking-[1px]">PHOTO</div>
         )}
       </div>
 
-      <div
-        style={{
-          fontFamily: "var(--font-cinzel-decorative), serif",
-          fontSize: 11,
-          color: "#1C1A17",
-          lineHeight: 1.2,
-          marginBottom: 2,
-        }}
-      >
+      <div className="font-display text-[11px] text-foreground leading-tight mb-0.5">
         {student.displayName}
       </div>
 
-      <div
-        style={{
-          fontSize: 11,
-          color: "#7A6A58",
-          marginBottom: 6,
-          fontStyle: "italic",
-          fontFamily: "var(--font-cormorant-garamond), serif",
-        }}
-      >
+      <div className="text-[11px] text-muted italic font-serif mb-1.5">
         {student.nickname ?? "Alias pending"}
       </div>
 
       <div
+        className="inline-block px-1.5 py-0.5"
         style={{
-          display: "inline-block",
-          padding: "2px 6px",
           background: `rgba(${r},${g},${b},0.1)`,
           border: `1px solid rgba(${r},${g},${b},0.2)`,
         }}
       >
-        <div
-          style={{
-            fontSize: 7,
-            color: meta.color,
-            letterSpacing: 1,
-            fontFamily: "var(--font-special-elite), monospace",
-          }}
-        >
+        <div className="text-[7px] tracking-[1px] font-mono" style={{ color: meta.color }}>
           {ROLE_LABELS[student.role]}
         </div>
       </div>
