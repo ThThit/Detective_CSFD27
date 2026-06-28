@@ -1,0 +1,9 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="160" height="160" fill="#E5E0CF"/>
+  <circle cx="80" cy="64" r="28" fill="#2F241F"/>
+  <path d="M36 138C40 109 58 92 80 92C102 92 120 109 124 138H36Z" fill="#2F241F"/>
+  <path d="M45 54C51 32 64 21 80 21C96 21 109 32 115 54H45Z" fill="#A86A2A"/>
+  <rect x="41" y="52" width="78" height="11" rx="5.5" fill="#A86A2A"/>
+  <circle cx="80" cy="80" r="70" stroke="#A86A2A" stroke-width="4" stroke-dasharray="8 8"/>
+  <text x="80" y="149" text-anchor="middle" fill="#7A6A58" font-family="monospace" font-size="12" letter-spacing="3">AGENT</text>
+</svg>
