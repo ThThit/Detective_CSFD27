@@ -1,34 +1,125 @@
+import Link from "next/link";
+import Image from "next/image";
+import { HOUSE_META } from "@/lib/constants/houses";
 import { cn } from "@/lib/utils";
+import type { HouseKey, Role } from "@/types";
 
-interface AgentCardProps {
-  name: string;
-  guessCount: number;
-  solved: boolean;
+type AgentCardProps = {
+  student: {
+    id: string;
+    displayName: string;
+    nickname: string | null;
+    profileUrl: string | null;
+    role: Role;
+    house: HouseKey;
+  };
   className?: string;
-}
+  delayMs?: number;
+};
 
-export function AgentCard({ name, guessCount, solved, className }: AgentCardProps) {
+const ROLE_LABELS: Record<Role, string> = {
+  house_leader: "HOUSE LEADER",
+  senior: "SENIOR",
+  junior: "JUNIOR",
+};
+
+export function AgentCard({ student, className, delayMs = 0 }: AgentCardProps) {
+  const meta = HOUSE_META[student.house];
+  const [r, g, b] = meta.rgb;
+
   return (
-    <div
-      className={cn(
-        "flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900",
-        className
-      )}
+    <Link
+      href={`/agent/${student.id}`}
+      className={cn("block", className)}
+      style={{
+        background: "#E5E0CF",
+        border: "1px solid rgba(47,36,31,0.1)",
+        padding: 12,
+        textDecoration: "none",
+        color: "inherit",
+        animation: `fadeIn 0.4s ease-out ${delayMs}ms both`,
+      }}
     >
-      <div className="flex flex-col">
-        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{name}</span>
-        <span className="text-xs text-zinc-500">{guessCount} guesses</span>
-      </div>
-      <span
-        className={cn(
-          "rounded-full px-2.5 py-0.5 text-xs font-medium",
-          solved
-            ? "bg-emerald-100 text-emerald-700"
-            : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-        )}
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: "50%",
+          background: "#F3EEE5",
+          border: `1px solid rgba(${r},${g},${b},0.2)`,
+          marginBottom: 8,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+        }}
       >
-        {solved ? "Solved" : "Unsolved"}
-      </span>
-    </div>
+        {student.profileUrl ? (
+          <Image
+            src={student.profileUrl}
+            alt={`${student.displayName} profile`}
+            width={36}
+            height={36}
+            unoptimized
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <div
+            style={{
+              fontSize: 6,
+              color: "#A0907E",
+              fontFamily: "var(--font-special-elite), monospace",
+              letterSpacing: 1,
+            }}
+          >
+            PHOTO
+          </div>
+        )}
+      </div>
+
+      <div
+        style={{
+          fontFamily: "var(--font-cinzel-decorative), serif",
+          fontSize: 11,
+          color: "#1C1A17",
+          lineHeight: 1.2,
+          marginBottom: 2,
+        }}
+      >
+        {student.displayName}
+      </div>
+
+      <div
+        style={{
+          fontSize: 11,
+          color: "#7A6A58",
+          marginBottom: 6,
+          fontStyle: "italic",
+          fontFamily: "var(--font-cormorant-garamond), serif",
+        }}
+      >
+        {student.nickname ?? "Alias pending"}
+      </div>
+
+      <div
+        style={{
+          display: "inline-block",
+          padding: "2px 6px",
+          background: `rgba(${r},${g},${b},0.1)`,
+          border: `1px solid rgba(${r},${g},${b},0.2)`,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 7,
+            color: meta.color,
+            letterSpacing: 1,
+            fontFamily: "var(--font-special-elite), monospace",
+          }}
+        >
+          {ROLE_LABELS[student.role]}
+        </div>
+      </div>
+    </Link>
   );
 }
