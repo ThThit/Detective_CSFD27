@@ -3,6 +3,15 @@
 @theme inline {
   --color-background: #F3EEE5;
   --color-foreground: #1C1A17;
+  --color-surface: #E5E0CF;
+  --color-accent: #A86A2A;
+  --color-muted: #7A6A58;
+  --color-muted-fg: #A0907E;
+  --color-danger: #8b2020;
+  --color-success: #3a6a2a;
+  --color-subtle: #C4B8A8;
+  --color-dark: #2F241F;
+  --max-width-content: 720px;
   --font-display: var(--font-cinzel-decorative);
   --font-serif: var(--font-cormorant-garamond);
   --font-mono: var(--font-special-elite);
@@ -20,6 +29,7 @@ body {
 }
 
 @keyframes pulse { 0%,49%{opacity:1}50%,99%{opacity:0.2} }
+@keyframes scanline { 0%{top:-10%} 100%{top:110%} }
 @keyframes stampIn { from{opacity:0;transform:scale(1.5) rotate(-14deg)} to{opacity:1;transform:scale(1) rotate(-5deg)} }
 @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 @keyframes overlayIn { from{opacity:0} to{opacity:1} }
