@@ -20,17 +20,8 @@ type AllowedImageType = (typeof ALLOWED_IMAGE_TYPES)[number];
 // ~2MB of binary ≈ 2.7M base64 characters.
 const MAX_BASE64_LENGTH = 2_700_000;
 
-// Free-text contact/profile fields share a simple upper bound.
-const MAX_TEXT_LENGTH = 100;
-
-const TEXT_FIELDS = ['nationality', 'instagram', 'discord', 'line'] as const;
-
 export type ProfilePatchInput = {
   nickname?: string;
-  nationality?: string;
-  instagram?: string;
-  discord?: string;
-  line?: string;
   profilePic?: string; // base64 data URI — triggers an R2 upload
 };
 
@@ -40,6 +31,31 @@ export class ProfileValidationError extends Error {
     super(message);
     this.name = 'ProfileValidationError';
   }
+}
+
+const PROFILE_PATCH_FIELDS = new Set<keyof ProfilePatchInput>([
+  'nickname',
+  'profilePic',
+]);
+
+/** Restrict self-service profile changes to the two fields owned by this UI. */
+export function validateProfilePatchInput(input: unknown): ProfilePatchInput {
+  if (typeof input !== 'object' || input === null || Array.isArray(input)) {
+    throw new ProfileValidationError('Profile update must be an object');
+  }
+
+  const body = input as Record<string, unknown>;
+  if (Object.keys(body).some((field) => !PROFILE_PATCH_FIELDS.has(field as keyof ProfilePatchInput))) {
+    throw new ProfileValidationError('Only nickname and profilePic can be updated');
+  }
+  if (body.nickname !== undefined && typeof body.nickname !== 'string') {
+    throw new ProfileValidationError('Nickname must be a string');
+  }
+  if (body.profilePic !== undefined && typeof body.profilePic !== 'string') {
+    throw new ProfileValidationError('profilePic must be a string');
+  }
+
+  return body as ProfilePatchInput;
 }
 
 /** Parse a `data:<mime>;base64,<payload>` URI into an upload-ready buffer. */
@@ -71,8 +87,9 @@ export function parseImageDataUri(
  */
 export async function applyProfileUpdate(
   userId: string,
-  body: ProfilePatchInput,
+  input: unknown,
 ): Promise<PublicStudent> {
+  const body = validateProfilePatchInput(input);
   const updates: Partial<typeof student.$inferInsert> = {};
 
   if (body.nickname !== undefined) {
@@ -81,16 +98,6 @@ export async function applyProfileUpdate(
       throw new ProfileValidationError('Nickname must be between 2 and 30 characters');
     }
     updates.nickname = nickname;
-  }
-
-  for (const field of TEXT_FIELDS) {
-    const value = body[field];
-    if (value === undefined) continue;
-    const trimmed = value.trim();
-    if (trimmed.length > MAX_TEXT_LENGTH) {
-      throw new ProfileValidationError(`${field} must be ${MAX_TEXT_LENGTH} characters or fewer`);
-    }
-    updates[field] = trimmed.length === 0 ? null : trimmed;
   }
 
   if (body.profilePic !== undefined) {

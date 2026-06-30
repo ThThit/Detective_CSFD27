@@ -7,7 +7,6 @@ import { getSessionData } from '@/lib/auth';
 import {
   applyProfileUpdate,
   ProfileValidationError,
-  type ProfilePatchInput,
 } from '@/lib/profile';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -58,9 +57,9 @@ export async function PATCH(
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  let body: ProfilePatchInput;
+  let body: unknown;
   try {
-    body = (await request.json()) as ProfilePatchInput;
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
