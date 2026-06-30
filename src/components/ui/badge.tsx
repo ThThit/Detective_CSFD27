@@ -1,31 +1,51 @@
-import { cn } from "@/lib/utils";
-
-type BadgeVariant = "default" | "noir" | "foxlock" | "tracer" | "cipher";
-
-interface BadgeProps {
-  variant?: BadgeVariant;
-  children: React.ReactNode;
-  className?: string;
-}
-
-const variantClasses: Record<BadgeVariant, string> = {
-  default: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  noir: "bg-zinc-900 text-zinc-100",
-  foxlock: "bg-amber-100 text-amber-800",
-  tracer: "bg-blue-100 text-blue-800",
-  cipher: "bg-emerald-100 text-emerald-800",
+type BadgeProps = {
+  house?: 'tracer' | 'noir' | 'foxlock' | 'cipher';
+  role?: 'junior' | 'senior' | 'house_leader';
+  children?: React.ReactNode;
+  size?: 'sm' | 'md';
 };
 
-export function Badge({ variant = "default", children, className }: BadgeProps) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        variantClasses[variant],
-        className
-      )}
-    >
-      {children}
-    </span>
-  );
+const houseColors = {
+  tracer: '#121358',
+  noir: '#274C27',
+  foxlock: '#4C1A17',
+  cipher: '#402561',
+};
+
+const baseStyle: React.CSSProperties = {
+  fontFamily: "'Special Elite', monospace",
+  letterSpacing: '1px',
+  textTransform: 'uppercase',
+  display: 'inline-flex',
+};
+
+export function Badge({ house, role, children, size = 'sm' }: BadgeProps) {
+  const sizeStyle: React.CSSProperties = size === 'md'
+    ? { fontSize: '11px', padding: '4px 10px' }
+    : { fontSize: '7px', padding: '2px 6px' };
+  if (house) {
+    const color = houseColors[house];
+    return (
+      <span style={{ ...baseStyle, ...sizeStyle, border: `1px solid ${color}`, color, backgroundColor: `${color}14` }}>
+        {children}
+      </span>
+    );
+  }
+
+  if (role) {
+    const isSenior = role == 'senior' || role == 'house_leader';
+    return (
+      <span style={{
+        ...baseStyle,
+        ...sizeStyle,
+        background: isSenior ? 'rgba(139, 32, 32, 0.1)' :
+          'rgba(122, 106, 88, 0.12)',
+        color: isSenior ? '#8b2020' : '#7A6A58',
+      }}>
+        {children ?? role.replace('_', ' ')}
+      </span>
+    );
+  }
+
+  return null;
 }

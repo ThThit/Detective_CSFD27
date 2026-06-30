@@ -1,60 +1,73 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import type { House } from "@/lib/constants/houses";
-
-interface Student {
+type Pair = {
   id: string;
-  name: string;
-  email: string;
-  house: House | null;
-  score: number;
+  senior: { studentId: string; displayName: string };
+  junior: { studentId: string; displayName: string; guessLeft: number };
+  foundAt: string | null;
+};
+
+function maskId(id: string) {
+  return `${id.slice(0, 2)}xx${id.slice(-2)}`;
 }
 
-interface StudentTableProps {
-  students: Student[];
-  className?: string;
-}
+type StudentTableProps = {
+  pairs: Pair[];
+  filter: 'all' | 'solved' | 'open';
+};
 
-export function StudentTable({ students, className }: StudentTableProps) {
+export function StudentTable({ pairs, filter }: StudentTableProps) {
+  const filtered = pairs.filter((p) => {
+    if (filter === 'solved') return p.foundAt !== null;
+    if (filter === 'open') return p.foundAt === null;
+    return true;
+  });
+
   return (
-    <div className={cn("overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800", className)}>
-      <table className="w-full text-sm">
-        <thead className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
-          <tr>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">Name</th>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">Email</th>
-            <th className="px-4 py-3 text-left font-medium text-zinc-500">House</th>
-            <th className="px-4 py-3 text-right font-medium text-zinc-500">Score</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-zinc-100 bg-white dark:divide-zinc-800 dark:bg-zinc-950">
-          {students.map((student) => (
-            <tr key={student.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900">
-              <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-50">{student.name}</td>
-              <td className="px-4 py-3 text-zinc-500">{student.email}</td>
-              <td className="px-4 py-3">
-                {student.house ? (
-                  <Badge variant={student.house} className="capitalize">{student.house}</Badge>
-                ) : (
-                  <span className="text-zinc-400">—</span>
-                )}
-              </td>
-              <td className="px-4 py-3 text-right font-medium text-zinc-900 dark:text-zinc-50">
-                {student.score}
-              </td>
-            </tr>
-          ))}
-          {students.length === 0 && (
-            <tr>
-              <td colSpan={4} className="px-4 py-8 text-center text-zinc-400">
-                No students yet.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+    <div>
+      {/* Column headers */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr 80px',
+        padding: '9px 16px', borderBottom: '1px solid rgba(47,36,31,0.1)',
+        background: '#E5E0CF', position: 'sticky', top: 0,
+      }}>
+        {['SENIOR', 'JUNIOR', 'STATUS'].map((h) => (
+          <div key={h} style={{ fontFamily: "'Special Elite', monospace", fontSize: '7px', color: '#A0907E', letterSpacing: '2px' }}>{h}</div>
+        ))}
+      </div>
+
+      {/* Rows */}
+      {filtered.map((pair, i) => {
+        const solved = pair.foundAt !== null;
+        return (
+          <div key={pair.id} style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr 80px',
+            padding: '12px 16px', borderBottom: '1px solid rgba(47,36,31,0.05)',
+            alignItems: 'center',
+            background: i % 2 === 1 ? 'rgba(47,36,31,0.02)' : 'transparent',
+            animation: `fadeIn 0.3s ease-out ${i * 0.04}s both`,
+          }}>
+            <div style={{ fontFamily: "'Special Elite', monospace", fontSize: '11px', color: '#1C1A17', letterSpacing: '0.5px' }}>
+              {pair.senior.displayName} <span style={{ color: '#A0907E', fontSize: '9px' }}>({maskId(pair.senior.studentId)})</span>
+            </div>
+            <div style={{ fontFamily: "'Special Elite', monospace", fontSize: '11px', color: '#1C1A17', letterSpacing: '0.5px' }}>
+              {pair.junior.displayName} <span style={{ color: '#A0907E', fontSize: '9px' }}>({maskId(pair.junior.studentId)})</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, background: solved ? '#3a6a2a' : '#8b2020' }} />
+              <div style={{ fontFamily: "'Special Elite', monospace", fontSize: '9px', letterSpacing: '1px', color: solved ? '#3a6a2a' : '#8b2020' }}>
+                {solved ? 'SOLVED' : 'OPEN'}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      <div style={{ padding: '16px', textAlign: 'center', fontFamily: "'Special Elite', monospace", fontSize: '9px', color: '#C4B8A8', letterSpacing: '3px' }}>
+        SHOWING {filtered.length} OF {pairs.length} PAIRS
+      </div>
+
+      <style>{`@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }`}</style>
     </div>
   );
 }
