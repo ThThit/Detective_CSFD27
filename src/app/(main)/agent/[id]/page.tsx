@@ -1,10 +1,12 @@
 import { ProfileCard } from "@/components/profile/ProfileCard";
+import { AccusationTerminal } from "@/components/agent/AccusationTerminal";
 import { db } from "@/db";
-import { student } from "@/db/schema";
+import { student, pcode, hint } from "@/db/schema";
 import { getSessionData } from "@/lib/auth";
-import { toPublicStudent } from "@/lib/mappers";
+import { toPublicStudent, toHint } from "@/lib/mappers";
 import { and, eq, isNull } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
+import type { Hint } from "@/types";
 
 type AgentProfilePageProps = {
   params: Promise<{ id: string }>;
@@ -41,10 +43,38 @@ export default async function AgentProfilePage({
   const publicStudent = toPublicStudent(row);
   const caseNumber = `#2027-CSFD-${publicStudent.house.toUpperCase().slice(0, 3)}-${publicStudent.studentId.slice(-3)}`;
 
+  let hints: Hint[] = [];
+  let isFound = false;
+
+  if (isMe && row.role === "junior") {
+    const [pcodeRow] = await db
+      .select()
+      .from(pcode)
+      .where(eq(pcode.juniorId, row.id));
+    if (pcodeRow) {
+      isFound = pcodeRow.foundAt !== null;
+      const hintRows = await db
+        .select()
+        .from(hint)
+        .where(eq(hint.pcodeId, pcodeRow.id));
+      hints = hintRows.map(toHint).filter((h) => h.isRevealed);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-surface flex flex-col font-serif">
-      <main className="flex-1 overflow-y-auto p-5">
+      <main className="flex-1 overflow-y-auto p-5 pb-24">
         <ProfileCard student={publicStudent} editable={isMe} />
+
+        {/* === DEV 5: Mentee & Hints section — seniors/house_leaders only === */}
+
+        {isMe && row.role === "junior" && (
+          <AccusationTerminal
+            initialGuessLeft={row.guessLeft}
+            initialIsFound={isFound}
+            initialHints={hints}
+          />
+        )}
 
         {!isMe && (
           <div className="mx-auto max-w-content my-8 bg-background border border-dark/8 p-5 text-center relative overflow-hidden">
