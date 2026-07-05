@@ -147,7 +147,9 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
   const [currentStudent, setCurrentStudent] = useState(student);
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState(student.nickname ?? "");
-  const [pendingProfilePic, setPendingProfilePic] = useState<string | null>(null);
+  const [pendingProfilePic, setPendingProfilePic] = useState<string | null>(
+    null,
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

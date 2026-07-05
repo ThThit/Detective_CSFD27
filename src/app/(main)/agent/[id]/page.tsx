@@ -45,6 +45,13 @@ export default async function AgentProfilePage({
 
   let hints: Hint[] = [];
   let isFound = false;
+  let solvedSenior: {
+    displayName: string;
+    nickname: string | null;
+    house: string;
+    profileUrl: string | null;
+  } | null = null;
+  let solvedAt: string | null = null;
 
   if (isMe && row.role === "junior") {
     const [pcodeRow] = await db
@@ -58,6 +65,22 @@ export default async function AgentProfilePage({
         .from(hint)
         .where(eq(hint.pcodeId, pcodeRow.id));
       hints = hintRows.map(toHint).filter((h) => h.isRevealed);
+
+      if (isFound) {
+        solvedAt = pcodeRow.foundAt!.toISOString();
+        const [seniorRow] = await db
+          .select()
+          .from(student)
+          .where(eq(student.id, pcodeRow.seniorId));
+        if (seniorRow) {
+          solvedSenior = {
+            displayName: seniorRow.displayName,
+            nickname: seniorRow.nickname,
+            house: seniorRow.house,
+            profileUrl: seniorRow.profileUrl,
+          };
+        }
+      }
     }
   }
 
@@ -69,11 +92,15 @@ export default async function AgentProfilePage({
         {/* === DEV 5: Mentee & Hints section — seniors/house_leaders only === */}
 
         {isMe && row.role === "junior" && (
-          <AccusationTerminal
-            initialGuessLeft={row.guessLeft}
-            initialIsFound={isFound}
-            initialHints={hints}
-          />
+          <section className="bg-surface relative overflow-hidden max-w-content mx-auto mt-4">
+            <AccusationTerminal
+              initialGuessLeft={row.guessLeft}
+              initialIsFound={isFound}
+              initialHints={hints}
+              initialSolvedSenior={solvedSenior}
+              initialSolvedAt={solvedAt}
+            />
+          </section>
         )}
 
         {!isMe && (

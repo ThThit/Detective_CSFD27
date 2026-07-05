@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server';
 import { getSessionData } from '@/lib/auth';
 import { db } from '@/db';
 import { student, pcode } from '@/db/schema';
-import { eq, isNull, and } from 'drizzle-orm';
+import { eq, isNull, and, like } from 'drizzle-orm';
 
 export async function POST(request: Request) {
   const session = await getSessionData();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await request.json().catch(() => null);
-  if (!body || typeof body.studentId !== 'string') {
+  if (!body || typeof body.studentId !== 'string' || !/^\d{3}$/.test(body.studentId)) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
@@ -34,17 +34,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'No attempts remaining' }, { status: 403 });
   }
 
-  const [senior] = await db
+  const matches = await db
     .select()
     .from(student)
     .where(and(
-      eq(student.studentId, body.studentId),
+      like(student.studentId, `%${body.studentId}`),
       eq(student.role, 'senior'),
       isNull(student.deletedAt),
     ));
-  if (!senior) return NextResponse.json({ error: 'Unknown operative' }, { status: 404 });
+  if (matches.length === 0) return NextResponse.json({ error: 'Unknown operative' }, { status: 404 });
 
-  if (senior.id === pcodeRow.seniorId) {
+  const senior = matches.find(s => s.id === pcodeRow.seniorId);
+
+  if (senior) {
     await db
       .update(pcode)
       .set({ foundAt: new Date(), updatedAt: new Date() })
