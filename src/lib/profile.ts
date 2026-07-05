@@ -23,7 +23,12 @@ const MAX_BASE64_LENGTH = 2_700_000;
 export type ProfilePatchInput = {
   nickname?: string;
   profilePic?: string; // base64 data URI — triggers an R2 upload
+  instagram?: string;
+  discord?: string;
+  line?: string;
 };
+
+const MAX_CONTACT_FIELD_LENGTH = 50;
 
 /** Thrown for any client-correctable problem (maps to HTTP 400). */
 export class ProfileValidationError extends Error {
@@ -36,9 +41,12 @@ export class ProfileValidationError extends Error {
 const PROFILE_PATCH_FIELDS = new Set<keyof ProfilePatchInput>([
   'nickname',
   'profilePic',
+  'instagram',
+  'discord',
+  'line',
 ]);
 
-/** Restrict self-service profile changes to the two fields owned by this UI. */
+/** Restrict self-service profile changes to the fields owned by this UI. */
 export function validateProfilePatchInput(input: unknown): ProfilePatchInput {
   if (typeof input !== 'object' || input === null || Array.isArray(input)) {
     throw new ProfileValidationError('Profile update must be an object');
@@ -46,13 +54,18 @@ export function validateProfilePatchInput(input: unknown): ProfilePatchInput {
 
   const body = input as Record<string, unknown>;
   if (Object.keys(body).some((field) => !PROFILE_PATCH_FIELDS.has(field as keyof ProfilePatchInput))) {
-    throw new ProfileValidationError('Only nickname and profilePic can be updated');
+    throw new ProfileValidationError('Only nickname, profilePic, instagram, discord, and line can be updated');
   }
   if (body.nickname !== undefined && typeof body.nickname !== 'string') {
     throw new ProfileValidationError('Nickname must be a string');
   }
   if (body.profilePic !== undefined && typeof body.profilePic !== 'string') {
     throw new ProfileValidationError('profilePic must be a string');
+  }
+  for (const field of ['instagram', 'discord', 'line'] as const) {
+    if (body[field] !== undefined && typeof body[field] !== 'string') {
+      throw new ProfileValidationError(`${field} must be a string`);
+    }
   }
 
   return body as ProfilePatchInput;
@@ -105,6 +118,16 @@ export async function applyProfileUpdate(
     const url = await uploadToR2(`profiles/${userId}.jpg`, buffer, contentType);
     // The key is stable per user, so bust the CDN/browser cache to show the new pic.
     updates.profileUrl = `${url}?v=${Date.now()}`;
+  }
+
+  for (const field of ['instagram', 'discord', 'line'] as const) {
+    const value = body[field];
+    if (value === undefined) continue;
+    const trimmed = value.trim();
+    if (trimmed.length > MAX_CONTACT_FIELD_LENGTH) {
+      throw new ProfileValidationError(`${field} must be at most ${MAX_CONTACT_FIELD_LENGTH} characters`);
+    }
+    updates[field] = trimmed.length === 0 ? null : trimmed;
   }
 
   if (Object.keys(updates).length === 0) {

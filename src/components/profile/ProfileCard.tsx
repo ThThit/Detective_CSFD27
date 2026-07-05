@@ -38,11 +38,15 @@ function ContactRow({
   value,
   icon,
   background,
+  editing,
+  onChange,
 }: {
   label: string;
   value: string | null;
   icon: React.ReactNode;
   background: string;
+  editing?: boolean;
+  onChange?: (value: string) => void;
 }) {
   const displayValue = value?.trim() || "—";
 
@@ -54,15 +58,27 @@ function ContactRow({
       >
         {icon}
       </div>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="text-[8px] text-muted-fg tracking-[1px] mb-0.5 font-mono">
           {label}
         </div>
-        <div
-          className={`text-[14px] break-words ${displayValue === "—" ? "text-muted-fg" : "text-foreground"}`}
-        >
-          {displayValue}
-        </div>
+        {editing ? (
+          <input
+            type="text"
+            value={value ?? ""}
+            onChange={(event) => onChange?.(event.target.value)}
+            maxLength={50}
+            placeholder={label.toLowerCase()}
+            aria-label={label}
+            className="w-full bg-transparent border-b border-accent/40 outline-none px-0.5 text-[14px] text-foreground caret-[#A86A2A] placeholder:text-muted-fg"
+          />
+        ) : (
+          <div
+            className={`text-[14px] break-words ${displayValue === "—" ? "text-muted-fg" : "text-foreground"}`}
+          >
+            {displayValue}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -147,6 +163,9 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
   const [currentStudent, setCurrentStudent] = useState(student);
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState(student.nickname ?? "");
+  const [instagram, setInstagram] = useState(student.instagram ?? "");
+  const [discord, setDiscord] = useState(student.discord ?? "");
+  const [line, setLine] = useState(student.line ?? "");
   const [pendingProfilePic, setPendingProfilePic] = useState<string | null>(
     null,
   );
@@ -162,6 +181,9 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
 
   function startEditing() {
     setNickname(currentStudent.nickname ?? "");
+    setInstagram(currentStudent.instagram ?? "");
+    setDiscord(currentStudent.discord ?? "");
+    setLine(currentStudent.line ?? "");
     setPendingProfilePic(null);
     setError(null);
     setEditing(true);
@@ -169,6 +191,9 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
 
   function cancelEditing() {
     setNickname(currentStudent.nickname ?? "");
+    setInstagram(currentStudent.instagram ?? "");
+    setDiscord(currentStudent.discord ?? "");
+    setLine(currentStudent.line ?? "");
     setPendingProfilePic(null);
     setError(null);
     setEditing(false);
@@ -216,9 +241,28 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
       return;
     }
 
-    const body: { nickname?: string; profilePic?: string } = {};
+    const body: {
+      nickname?: string;
+      profilePic?: string;
+      instagram?: string;
+      discord?: string;
+      line?: string;
+    } = {};
     if (nicknameChanged) body.nickname = trimmedNickname;
     if (pendingProfilePic) body.profilePic = pendingProfilePic;
+
+    const trimmedInstagram = instagram.trim();
+    if (trimmedInstagram !== (currentStudent.instagram?.trim() ?? "")) {
+      body.instagram = trimmedInstagram;
+    }
+    const trimmedDiscord = discord.trim();
+    if (trimmedDiscord !== (currentStudent.discord?.trim() ?? "")) {
+      body.discord = trimmedDiscord;
+    }
+    const trimmedLine = line.trim();
+    if (trimmedLine !== (currentStudent.line?.trim() ?? "")) {
+      body.line = trimmedLine;
+    }
 
     if (Object.keys(body).length === 0) {
       setEditing(false);
@@ -242,6 +286,9 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
 
       setCurrentStudent(result as ProfileCardStudent);
       setNickname((result as ProfileCardStudent).nickname ?? "");
+      setInstagram((result as ProfileCardStudent).instagram ?? "");
+      setDiscord((result as ProfileCardStudent).discord ?? "");
+      setLine((result as ProfileCardStudent).line ?? "");
       setPendingProfilePic(null);
       setEditing(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -363,7 +410,9 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
         <div className="flex flex-col gap-2">
           <ContactRow
             label="INSTAGRAM"
-            value={currentStudent.instagram}
+            value={editing ? instagram : currentStudent.instagram}
+            editing={editing}
+            onChange={setInstagram}
             icon={
               <div className="w-2.5 h-2.5 rounded-[3px] border-[1.5px] border-white" />
             }
@@ -371,13 +420,17 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
           />
           <ContactRow
             label="DISCORD"
-            value={currentStudent.discord}
+            value={editing ? discord : currentStudent.discord}
+            editing={editing}
+            onChange={setDiscord}
             icon="D"
             background="#5865F2"
           />
           <ContactRow
             label="LINE"
-            value={currentStudent.line}
+            value={editing ? line : currentStudent.line}
+            editing={editing}
+            onChange={setLine}
             icon="L"
             background="#00B900"
           />
