@@ -19,9 +19,7 @@ export function HintCard({ content, targetHouse, usedAt, className }: HintCardPr
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm text-zinc-700 dark:text-zinc-300">{content}</p>
-        <Badge variant={targetHouse} className="shrink-0 capitalize">
-          {targetHouse}
-        </Badge>
+        <Badge house={targetHouse}>{targetHouse}</Badge>
       </div>
       {usedAt && (
         <p className="mt-2 text-xs text-zinc-400">
