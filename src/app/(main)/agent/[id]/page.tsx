@@ -1,4 +1,5 @@
 import { ProfileCard } from "@/components/profile/ProfileCard";
+import { HintsSection } from "@/components/hints/hints-section";
 import { db } from "@/db";
 import { student } from "@/db/schema";
 import { getSessionData } from "@/lib/auth";
@@ -45,6 +46,13 @@ export default async function AgentProfilePage({
     <div className="min-h-screen bg-surface flex flex-col font-serif">
       <main className="flex-1 overflow-y-auto p-5">
         <ProfileCard student={publicStudent} editable={isMe} />
+
+        {/* === DEV 5: Mentee & Hints section === */}
+        {isMe && (publicStudent.role === "senior" || publicStudent.role === "house_leader") && (
+          <div className="mx-auto max-w-content mt-6">
+            <HintsSection />
+          </div>
+        )}
 
         {!isMe && (
           <div className="mx-auto max-w-content my-8 bg-background border border-dark/8 p-5 text-center relative overflow-hidden">
