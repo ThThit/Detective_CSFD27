@@ -6,7 +6,7 @@ import { HintCard } from "@/components/hints/hint-card";
 import { HOUSE_META } from "@/lib/constants/houses";
 import type { Hint, PublicStudent } from "@/types";
 
-export function HintsSection() {
+export function HintsSection({ editMode = true }: { editMode?: boolean }) {
   const [hints, setHints] = useState<Hint[]>([]);
   const [mentee, setMentee] = useState<PublicStudent | null>(null);
   const [loading, setLoading] = useState(true);
@@ -213,7 +213,7 @@ export function HintsSection() {
               hint={hint}
               index={i + 1}
               variant="senior"
-              onSave={handleSave}
+              onSave={editMode ? handleSave : undefined}
             />
           ))}
         </div>

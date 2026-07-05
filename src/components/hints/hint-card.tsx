@@ -74,9 +74,9 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
           </span>
         </div>
         <div style={{ padding: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-          <div style={{ height: 10, background: "repeating-linear-gradient(90deg,#DDD7C8 0px,#DDD7C8 5px,#E5E0CF 5px,#E5E0CF 8px)", borderRadius: 1 }} />
-          <div style={{ height: 10, background: "repeating-linear-gradient(90deg,#DDD7C8 0px,#DDD7C8 5px,#E5E0CF 5px,#E5E0CF 8px)", borderRadius: 1, width: "70%" }} />
-          <div style={{ height: 10, background: "repeating-linear-gradient(90deg,#DDD7C8 0px,#DDD7C8 5px,#E5E0CF 5px,#E5E0CF 8px)", borderRadius: 1, width: "85%" }} />
+          <div style={{ height: 10, background: "repeating-linear-gradient(90deg,#C4B8A8 0px,#C4B8A8 5px,#E5E0CF 5px,#E5E0CF 8px)", borderRadius: 1 }} />
+          <div style={{ height: 10, background: "repeating-linear-gradient(90deg,#C4B8A8 0px,#C4B8A8 5px,#E5E0CF 5px,#E5E0CF 8px)", borderRadius: 1, width: "70%" }} />
+          <div style={{ height: 10, background: "repeating-linear-gradient(90deg,#C4B8A8 0px,#C4B8A8 5px,#E5E0CF 5px,#E5E0CF 8px)", borderRadius: 1, width: "85%" }} />
         </div>
         <div style={{ position: "absolute", top: "50%", right: 14, transform: "translateY(-50%) rotate(-4deg)", border: "2px solid rgba(139,32,32,0.4)", padding: "3px 8px" }}>
           <span style={{ fontFamily: "'Special Elite', monospace", fontSize: 10, color: "rgba(139,32,32,0.5)", letterSpacing: 2 }}>
@@ -164,7 +164,7 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
       </div>
       <div style={{ padding: "12px 14px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ flex: 1, height: 10, background: "repeating-linear-gradient(90deg,#DDD7C8 0px,#DDD7C8 6px,transparent 6px,transparent 10px)", borderRadius: 2, opacity: 0.6 }} />
+          <div style={{ flex: 1, height: 10, background: "repeating-linear-gradient(90deg,#C4B8A8 0px,#C4B8A8 6px,transparent 6px,transparent 10px)", borderRadius: 2, opacity: 0.6 }} />
           <span style={{ fontSize: 9, color: "#C4B8A8", letterSpacing: 1, whiteSpace: "nowrap", fontFamily: "'Special Elite', monospace" }}>
             EMPTY
           </span>
