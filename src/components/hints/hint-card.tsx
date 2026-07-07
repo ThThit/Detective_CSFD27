@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 type HintCardProps = {
   hint: {
     id: string;
@@ -11,7 +9,6 @@ type HintCardProps = {
   };
   index: number;
   variant: "senior" | "junior";
-  onSave?: (id: string, content: string) => Promise<void>;
 };
 
 function formatFull(iso: string) {
@@ -26,15 +23,7 @@ function formatShort(iso: string) {
     .toUpperCase();
 }
 
-export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
-  const [localContent, setLocalContent] = useState(hint.content);
-
-  async function handleBlur() {
-    if (onSave && localContent !== hint.content) {
-      await onSave(hint.id, localContent);
-    }
-  }
-
+export function HintCard({ hint, index, variant }: HintCardProps) {
   // ── JUNIOR VARIANT ────────────────────────────────────────────────
   if (variant === "junior") {
     if (hint.isRevealed) {
@@ -105,18 +94,9 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
           </span>
         </div>
         <div style={{ padding: "12px 14px" }}>
-          {onSave ? (
-            <textarea
-              value={localContent}
-              onChange={(e) => setLocalContent(e.target.value)}
-              onBlur={handleBlur}
-              style={{ width: "100%", background: "#F3EEE5", border: "1px solid rgba(168,106,42,0.2)", outline: "none", fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: "#1C1A17", lineHeight: 1.6, padding: 8, boxSizing: "border-box", resize: "none", caretColor: "#A86A2A", minHeight: 60 }}
-            />
-          ) : (
-            <p style={{ margin: 0, fontSize: 14, color: "#2F241F", lineHeight: 1.65, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
-              &ldquo;{localContent}&rdquo;
-            </p>
-          )}
+          <p style={{ margin: 0, fontSize: 14, color: "#2F241F", lineHeight: 1.65, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
+            &ldquo;{hint.content}&rdquo;
+          </p>
         </div>
       </div>
     );
@@ -137,12 +117,9 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
           </span>
         </div>
         <div style={{ padding: "12px 14px" }}>
-          <textarea
-            value={localContent}
-            onChange={(e) => setLocalContent(e.target.value)}
-            onBlur={handleBlur}
-            style={{ width: "100%", background: "#F3EEE5", border: "1px solid rgba(168,106,42,0.2)", outline: "none", fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: "#1C1A17", lineHeight: 1.6, padding: 8, boxSizing: "border-box", resize: "none", caretColor: "#A86A2A", minHeight: 60 }}
-          />
+          <p style={{ margin: 0, fontSize: 14, color: "#2F241F", lineHeight: 1.65, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
+            &ldquo;{hint.content}&rdquo;
+          </p>
         </div>
       </div>
     );

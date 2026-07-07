@@ -90,7 +90,14 @@ export default async function AgentProfilePage({
       <main className="flex-1 overflow-y-auto p-5 pb-24">
         <ProfileCard student={publicStudent} editable={isMe} />
 
-        {/* === DEV 5: Mentee & Hints section — seniors/house_leaders only === */}
+        {/* === DEV 5: Mentee & Hints section === */}
+        {isMe &&
+          (publicStudent.role === "senior" ||
+            publicStudent.role === "house_leader") && (
+            <div className="mx-auto max-w-content mt-6">
+              <HintsSection />
+            </div>
+          )}
 
         {isMe && row.role === "junior" && (
           <section className="bg-surface relative overflow-hidden max-w-content mx-auto mt-4">

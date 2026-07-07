@@ -6,7 +6,7 @@ import { HintCard } from "@/components/hints/hint-card";
 import { HOUSE_META } from "@/lib/constants/houses";
 import type { Hint, PublicStudent } from "@/types";
 
-export function HintsSection({ editMode = true }: { editMode?: boolean }) {
+export function HintsSection() {
   const [hints, setHints] = useState<Hint[]>([]);
   const [mentee, setMentee] = useState<PublicStudent | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,14 +22,6 @@ export function HintsSection({ editMode = true }: { editMode?: boolean }) {
       })
       .finally(() => setLoading(false));
   }, []);
-
-  async function handleSave(id: string, content: string) {
-    await fetch(`/api/hints/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content }),
-    });
-  }
 
   if (loading) {
     return (
@@ -208,13 +200,7 @@ export function HintsSection({ editMode = true }: { editMode?: boolean }) {
             EVIDENCE HINTS
           </div>
           {hints.map((hint, i) => (
-            <HintCard
-              key={hint.id}
-              hint={hint}
-              index={i + 1}
-              variant="senior"
-              onSave={editMode ? handleSave : undefined}
-            />
+            <HintCard key={hint.id} hint={hint} index={i + 1} variant="senior" />
           ))}
         </div>
       )}
