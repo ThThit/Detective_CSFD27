@@ -1,5 +1,6 @@
 import { ProfileCard } from "@/components/profile/ProfileCard";
 import { AccusationTerminal } from "@/components/agent/AccusationTerminal";
+import { HintsSection } from "@/components/hints/hints-section";
 import { db } from "@/db";
 import { student, pcode, hint } from "@/db/schema";
 import { getSessionData } from "@/lib/auth";
