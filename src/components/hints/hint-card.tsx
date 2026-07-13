@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 type HintCardProps = {
   hint: {
     id: string;
@@ -11,7 +9,6 @@ type HintCardProps = {
   };
   index: number;
   variant: "senior" | "junior";
-  onSave?: (id: string, content: string) => Promise<void>;
 };
 
 function formatFull(iso: string) {
@@ -26,21 +23,12 @@ function formatShort(iso: string) {
     .toUpperCase();
 }
 
-export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
-  const [localContent, setLocalContent] = useState(hint.content);
-
-  async function handleBlur() {
-    if (onSave && localContent !== hint.content) {
-      await onSave(hint.id, localContent);
-    }
-  }
-
+export function HintCard({ hint, index, variant }: HintCardProps) {
   // ── JUNIOR VARIANT ────────────────────────────────────────────────
   if (variant === "junior") {
     if (hint.isRevealed) {
       return (
-        <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.3)", marginBottom: 8, overflow: "hidden", position: "relative" }}>
-          <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(58,106,42,0.12) transparent transparent" }} />
+        <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.3)", marginBottom: 8, overflow: "hidden" }}>
           <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(58,106,42,0.15)", background: "rgba(58,106,42,0.06)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ width: 5, height: 5, background: "#3a6a2a", borderRadius: "50%" }} />
@@ -93,8 +81,7 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
 
   if (state === "released") {
     return (
-      <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.25)", marginBottom: 10, overflow: "hidden", position: "relative" }}>
-        <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(58,106,42,0.12) transparent transparent" }} />
+      <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.25)", marginBottom: 10, overflow: "hidden" }}>
         <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(58,106,42,0.15)", background: "rgba(58,106,42,0.06)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 5, height: 5, background: "#3a6a2a", borderRadius: "50%" }} />
@@ -107,18 +94,9 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
           </span>
         </div>
         <div style={{ padding: "12px 14px" }}>
-          {onSave ? (
-            <textarea
-              value={localContent}
-              onChange={(e) => setLocalContent(e.target.value)}
-              onBlur={handleBlur}
-              style={{ width: "100%", background: "#F3EEE5", border: "1px solid rgba(168,106,42,0.2)", outline: "none", fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: "#1C1A17", lineHeight: 1.6, padding: 8, boxSizing: "border-box", resize: "none", caretColor: "#A86A2A", minHeight: 60 }}
-            />
-          ) : (
-            <p style={{ margin: 0, fontSize: 14, color: "#2F241F", lineHeight: 1.65, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
-              &ldquo;{localContent}&rdquo;
-            </p>
-          )}
+          <p style={{ margin: 0, fontSize: 14, color: "#2F241F", lineHeight: 1.65, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
+            &ldquo;{hint.content}&rdquo;
+          </p>
         </div>
       </div>
     );
@@ -126,8 +104,7 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
 
   if (state === "pending") {
     return (
-      <div style={{ background: "#E5E0CF", border: "1px solid rgba(168,106,42,0.3)", marginBottom: 10, overflow: "hidden", position: "relative" }}>
-        <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(168,106,42,0.1) transparent transparent" }} />
+      <div style={{ background: "#E5E0CF", border: "1px solid rgba(168,106,42,0.3)", marginBottom: 10, overflow: "hidden" }}>
         <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(168,106,42,0.12)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 5, height: 5, background: "#A86A2A", borderRadius: "50%" }} />
@@ -140,12 +117,9 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
           </span>
         </div>
         <div style={{ padding: "12px 14px" }}>
-          <textarea
-            value={localContent}
-            onChange={(e) => setLocalContent(e.target.value)}
-            onBlur={handleBlur}
-            style={{ width: "100%", background: "#F3EEE5", border: "1px solid rgba(168,106,42,0.2)", outline: "none", fontFamily: "'Cormorant Garamond', serif", fontSize: 14, color: "#1C1A17", lineHeight: 1.6, padding: 8, boxSizing: "border-box", resize: "none", caretColor: "#A86A2A", minHeight: 60 }}
-          />
+          <p style={{ margin: 0, fontSize: 14, color: "#2F241F", lineHeight: 1.65, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif" }}>
+            &ldquo;{hint.content}&rdquo;
+          </p>
         </div>
       </div>
     );
@@ -153,8 +127,7 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
 
   // Sealed
   return (
-    <div style={{ background: "#E5E0CF", border: "1px solid rgba(47,36,31,0.12)", marginBottom: 10, overflow: "hidden", position: "relative" }}>
-      <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(47,36,31,0.07) transparent transparent" }} />
+    <div style={{ background: "#E5E0CF", border: "1px solid rgba(47,36,31,0.12)", marginBottom: 10, overflow: "hidden" }}>
       <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(47,36,31,0.08)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 5, height: 5, background: "#C4B8A8", borderRadius: "50%" }} />

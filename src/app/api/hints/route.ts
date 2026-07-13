@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { student, pcode, hint } from '@/db/schema';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, asc, eq, isNull } from 'drizzle-orm';
 import { getSessionData } from '@/lib/auth';
 import { toHint } from '@/lib/mappers';
 
@@ -26,12 +26,10 @@ export async function GET() {
   const hintRows = await db
     .select()
     .from(hint)
-    .where(and(eq(hint.pcodeId, pcodeRow.id), isNull(hint.deletedAt)));
+    .where(and(eq(hint.pcodeId, pcodeRow.id), isNull(hint.deletedAt)))
+    .orderBy(asc(hint.createdAt), asc(hint.id));
 
-  const hints = isSenior
-    ? hintRows.map(toHint)
-    : hintRows.map(toHint).filter((h) => h.isRevealed);
+  const hints = hintRows.map((row, i) => toHint(row, i));
 
   return NextResponse.json({ hints });
 }
-

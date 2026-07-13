@@ -38,7 +38,6 @@ CREATE TABLE "hint" (
     "id"          UUID      PRIMARY KEY DEFAULT gen_random_uuid(),
     "pcode_id"    UUID      NOT NULL REFERENCES "pcode"("id") ON DELETE CASCADE,
     "content"     TEXT      NOT NULL DEFAULT '',
-    "reveal_date" TIMESTAMP NOT NULL,
 
     "created_at"  TIMESTAMP NOT NULL DEFAULT NOW(),
     "updated_at"  TIMESTAMP NOT NULL DEFAULT NOW(),

@@ -40,7 +40,6 @@ export const hint = pgTable('hint', {
   id:         uuid('id').primaryKey().defaultRandom(),
   pcodeId:    uuid('pcode_id').notNull().references(() => pcode.id, { onDelete: 'cascade' }),
   content:    text('content').notNull().default(''),
-  revealDate: timestamp('reveal_date').notNull(),
   createdAt:  timestamp('created_at').notNull().defaultNow(),
   updatedAt:  timestamp('updated_at').notNull().defaultNow(),
   deletedAt:  timestamp('deleted_at'),
