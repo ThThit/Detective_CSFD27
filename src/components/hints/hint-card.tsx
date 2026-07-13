@@ -39,7 +39,8 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
   if (variant === "junior") {
     if (hint.isRevealed) {
       return (
-        <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.3)", marginBottom: 8, overflow: "hidden" }}>
+        <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.3)", marginBottom: 8, overflow: "hidden", position: "relative" }}>
+          <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(58,106,42,0.12) transparent transparent" }} />
           <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(58,106,42,0.15)", background: "rgba(58,106,42,0.06)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ width: 5, height: 5, background: "#3a6a2a", borderRadius: "50%" }} />
@@ -92,7 +93,8 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
 
   if (state === "released") {
     return (
-      <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.25)", marginBottom: 10, overflow: "hidden" }}>
+      <div style={{ background: "#E5E0CF", border: "1px solid rgba(58,106,42,0.25)", marginBottom: 10, overflow: "hidden", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(58,106,42,0.12) transparent transparent" }} />
         <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(58,106,42,0.15)", background: "rgba(58,106,42,0.06)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 5, height: 5, background: "#3a6a2a", borderRadius: "50%" }} />
@@ -124,7 +126,8 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
 
   if (state === "pending") {
     return (
-      <div style={{ background: "#E5E0CF", border: "1px solid rgba(168,106,42,0.3)", marginBottom: 10, overflow: "hidden" }}>
+      <div style={{ background: "#E5E0CF", border: "1px solid rgba(168,106,42,0.3)", marginBottom: 10, overflow: "hidden", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(168,106,42,0.1) transparent transparent" }} />
         <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(168,106,42,0.12)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ width: 5, height: 5, background: "#A86A2A", borderRadius: "50%" }} />
@@ -150,7 +153,8 @@ export function HintCard({ hint, index, variant, onSave }: HintCardProps) {
 
   // Sealed
   return (
-    <div style={{ background: "#E5E0CF", border: "1px solid rgba(47,36,31,0.12)", marginBottom: 10, overflow: "hidden" }}>
+    <div style={{ background: "#E5E0CF", border: "1px solid rgba(47,36,31,0.12)", marginBottom: 10, overflow: "hidden", position: "relative" }}>
+      <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderStyle: "solid", borderWidth: "0 13px 13px 0", borderColor: "transparent rgba(47,36,31,0.07) transparent transparent" }} />
       <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(47,36,31,0.08)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ width: 5, height: 5, background: "#C4B8A8", borderRadius: "50%" }} />
