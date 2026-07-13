@@ -3,6 +3,8 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { DivisionsIcon } from "@/components/icons/DivisionsIcon";
+import { ProfileIcon } from "@/components/icons/ProfileIcon";
 
 const navLinks = [
   { label: "DIVISIONS", href: "/houses" },
@@ -30,10 +32,16 @@ function BottomTabs() {
 
           <div
             className={cn(
-              "text-[9px] tracking-[1.5px] font-mono",
+              "flex items-center justify-center gap-1 text-[9px] tracking-[1.5px] font-mono",
               pathname.startsWith(nav.href) ? "text-accent" : "text-muted",
             )}
           >
+            {nav.href === "/houses" && (
+              <DivisionsIcon className="w-4 pb-1 h-4 shrink-0" />
+            )}
+            {nav.href === "/agent/me" && (
+              <ProfileIcon className="w-4 pb-1 h-4 shrink-0" />
+            )}
             {nav.label}
           </div>
         </Link>
