@@ -21,7 +21,7 @@ export function Navbar({ user }: NavbarProps) {
   return (
     <>
       {/* Top bar */}
-      <nav style={{ background: '#E5E0CF', borderBottom: '1px solid rgba(47,36,31,0.14)' }}
+      <nav style={{ background: '#E0D3AC', borderBottom: '1px solid rgba(47,36,31,0.14)' }}
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-12">
         <Link href="/houses" style={{ fontFamily: "'Cinzel Decorative', serif", fontSize: '15px', color: '#2F241F', letterSpacing: '1px' }}>
           CSFD27
@@ -37,7 +37,7 @@ export function Navbar({ user }: NavbarProps) {
       <div className="h-12" />
 
       {/* Bottom tabs */}
-      <nav style={{ background: '#E5E0CF', borderTop: '1px solid rgba(47,36,31,0.1)', paddingBottom: '1px' }}
+      <nav style={{ background: '#E0D3AC', borderTop: '1px solid rgba(47,36,31,0.1)', paddingBottom: '1px' }}
         className="fixed bottom-0 left-0 right-0 z-50 flex">
         {tabs.map((tab, i) => {
           const isActive = pathname === tab.href;

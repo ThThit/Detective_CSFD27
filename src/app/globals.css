@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #F3EEE5;
+  --color-background: #EDE1C4;
   --color-foreground: #1C1A17;
-  --color-surface: #E5E0CF;
+  --color-surface: #E0D3AC;
   --color-accent: #A86A2A;
   --color-muted: #7A6A58;
   --color-muted-fg: #A0907E;
@@ -18,10 +18,25 @@
 }
 
 body {
-  background: #F3EEE5;
+  background: #EDE1C4;
   color: #1C1A17;
   font-family: var(--font-cormorant-garamond), Georgia, serif;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* Paper grain — fixed noise overlay above all page content, blended into
+   whatever's beneath so every page reads as aged/textured, not flat. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
 * {
@@ -37,8 +52,11 @@ body {
 @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 @keyframes revealPot { 0%{transform:scale(0.8) rotate(-8deg);opacity:0} 60%{transform:scale(1.05) rotate(2deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
 
-.house-card { transition: transform 0.15s ease; }
-.house-card:hover { transform: translateY(-2px); }
+.house-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.house-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(20,14,8,0.34), 0 4px 10px rgba(20,14,8,0.26), inset 0 0 28px rgba(20,14,8,0.24) !important;
+}
 
 .cta-btn { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(168,106,42,0.3); }

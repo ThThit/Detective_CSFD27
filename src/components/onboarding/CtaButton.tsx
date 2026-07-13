@@ -28,7 +28,7 @@ export default function CtaButton() {
       style={{
         display: 'block',
         textDecoration: 'none',
-        background: '#F3EEE5',
+        background: '#EDE1C4',
         border: '1px solid rgba(168,106,42,0.3)',
         borderBottom: '2px solid #A86A2A',
         padding: '16px 20px',

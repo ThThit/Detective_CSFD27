@@ -78,7 +78,7 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
         >
           <div
             style={{
-              background: "#E5E0CF",
+              background: "#E0D3AC",
               borderTop: "1px solid rgba(168,106,42,0.28)",
               padding: "28px 24px 40px",
               animation: "slideUp 0.35s ease-out both",
@@ -122,7 +122,7 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
 
                 <div
                   style={{
-                    background: "#F3EEE5",
+                    background: "#EDE1C4",
                     border: "1px solid rgba(168,106,42,0.25)",
                     display: "flex",
                     alignItems: "center",
@@ -268,7 +268,7 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
 
                   <div
                     style={{
-                      background: "#F3EEE5",
+                      background: "#EDE1C4",
                       border: "1px solid rgba(168,106,42,0.3)",
                       padding: 20,
                       animation: "revealPot 0.6s ease-out 1.2s both",
@@ -345,7 +345,7 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
                     style={{
                       fontFamily: "var(--font-cinzel-decorative), serif",
                       fontSize: 13,
-                      color: "#F3EEE5",
+                      color: "#EDE1C4",
                       letterSpacing: 2,
                     }}
                   >

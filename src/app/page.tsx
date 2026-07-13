@@ -15,7 +15,7 @@ export default function Home() {
           justifyContent: "space-between",
           borderBottom: "1px solid rgba(47,36,31,0.14)",
           flexShrink: 0,
-          background: "#E5E0CF",
+          background: "#E0D3AC",
         }}
       >
         <div
