@@ -96,7 +96,7 @@ export function HouseCard({ houseKey, memberCount, onClick }: HouseCardProps) {
     <Link
       href={`/houses/${houseKey}`}
       onClick={onClick}
-      className="house-card"
+      className="house-card torn-bottom"
       style={{
         background: "#E0D3AC",
         border: `1px solid rgba(${r},${g},${b},0.22)`,

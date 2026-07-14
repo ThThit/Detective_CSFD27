@@ -251,7 +251,7 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
   }
 
   return (
-    <section className="bg-surface relative overflow-hidden max-w-content mx-auto">
+    <section className="bg-surface relative overflow-hidden max-w-content mx-auto torn-bottom">
       <div className="absolute top-1/2 -right-5 -translate-y-1/2 -rotate-[35deg] font-display text-[40px] whitespace-nowrap pointer-events-none tracking-[4px] text-accent/5">
         CLASSIFIED
       </div>

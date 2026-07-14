@@ -42,6 +42,7 @@ export default function Home() {
 
       {/* Corkboard hero — full width dark strip */}
       <div
+        className="torn-bottom"
         style={{
           position: "relative",
           height: 206,
