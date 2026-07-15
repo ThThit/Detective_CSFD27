@@ -1,5 +1,6 @@
 import type { student, hint } from '@/db/schema';
 import type { PublicStudent, Hint } from '@/types';
+import { HINT_RELEASE_DATES } from '@/lib/constants/hints';
 
 type StudentRow = typeof student.$inferSelect;
 type HintRow = typeof hint.$inferSelect;
@@ -22,13 +23,15 @@ export function toPublicStudent(row: StudentRow): PublicStudent {
   };
 }
 
-export function toHint(row: HintRow): Hint {
+export function toHint(row: HintRow, position: number): Hint {
+  const revealDate = HINT_RELEASE_DATES[position];
+  const isRevealed = revealDate <= new Date();
   return {
     id: row.id,
     pcodeId: row.pcodeId,
-    content: row.content,
-    revealDate: row.revealDate.toISOString(),
-    isRevealed: row.revealDate <= new Date(),
+    content: isRevealed ? row.content : '',
+    revealDate: revealDate.toISOString(),
+    isRevealed,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
