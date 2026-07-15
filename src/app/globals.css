@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #F3EEE5;
+  --color-background: #EDE1C4;
   --color-foreground: #1C1A17;
-  --color-surface: #E5E0CF;
+  --color-surface: #E0D3AC;
   --color-accent: #A86A2A;
   --color-muted: #7A6A58;
   --color-muted-fg: #A0907E;
@@ -18,10 +18,25 @@
 }
 
 body {
-  background: #F3EEE5;
+  background: #EDE1C4;
   color: #1C1A17;
   font-family: var(--font-cormorant-garamond), Georgia, serif;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* Paper grain — fixed noise overlay above all page content, blended into
+   whatever's beneath so every page reads as aged/textured, not flat. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
 * {
@@ -40,8 +55,48 @@ body {
 @keyframes closedStamp { 0%{opacity:0;transform:scale(1.6) rotate(-10deg)} 60%{transform:scale(0.97) rotate(-3deg);opacity:1} 100%{transform:scale(1) rotate(-3deg);opacity:1} }
 @keyframes revealUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
-.house-card { transition: transform 0.15s ease; }
-.house-card:hover { transform: translateY(-2px); }
+/* Torn/deckled paper edges — shallow zigzag clip-paths, ~4% notch depth so
+   existing padding keeps content clear of the cut. */
+.torn-bottom {
+  clip-path: polygon(
+    0% 0%, 100% 0%,
+    100% 97%, 96% 100%, 92% 96%, 88% 100%, 84% 97%, 80% 100%,
+    76% 96%, 72% 100%, 68% 97%, 64% 100%, 60% 96%, 56% 100%,
+    52% 97%, 48% 100%, 44% 96%, 40% 100%, 36% 97%, 32% 100%,
+    28% 96%, 24% 100%, 20% 97%, 16% 100%, 12% 96%, 8% 100%,
+    4% 97%, 0% 100%
+  );
+}
+
+.torn-top {
+  clip-path: polygon(
+    0% 4%, 4% 0%, 8% 3%, 12% 0%, 16% 4%, 20% 0%, 24% 3%, 28% 0%,
+    32% 4%, 36% 0%, 40% 3%, 44% 0%, 48% 4%, 52% 0%, 56% 3%, 60% 0%,
+    64% 4%, 68% 0%, 72% 3%, 76% 0%, 80% 4%, 84% 0%, 88% 3%, 92% 0%,
+    96% 4%, 100% 0%,
+    100% 100%, 0% 100%
+  );
+}
+
+.torn-edges {
+  clip-path: polygon(
+    0% 4%, 4% 0%, 8% 3%, 12% 0%, 16% 4%, 20% 0%, 24% 3%, 28% 0%,
+    32% 4%, 36% 0%, 40% 3%, 44% 0%, 48% 4%, 52% 0%, 56% 3%, 60% 0%,
+    64% 4%, 68% 0%, 72% 3%, 76% 0%, 80% 4%, 84% 0%, 88% 3%, 92% 0%,
+    96% 4%, 100% 0%,
+    100% 97%, 96% 100%, 92% 96%, 88% 100%, 84% 97%, 80% 100%,
+    76% 96%, 72% 100%, 68% 97%, 64% 100%, 60% 96%, 56% 100%,
+    52% 97%, 48% 100%, 44% 96%, 40% 100%, 36% 97%, 32% 100%,
+    28% 96%, 24% 100%, 20% 97%, 16% 100%, 12% 96%, 8% 100%,
+    4% 97%, 0% 100%
+  );
+}
+
+.house-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.house-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(20,14,8,0.34), 0 4px 10px rgba(20,14,8,0.26), inset 0 0 28px rgba(20,14,8,0.24) !important;
+}
 
 .cta-btn { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(168,106,42,0.3); }

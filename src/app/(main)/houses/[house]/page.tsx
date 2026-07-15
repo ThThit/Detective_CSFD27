@@ -121,7 +121,7 @@ export default async function HousePage({
       <main className="flex-1 overflow-y-auto">
         {/* Hero banner */}
         <div
-          className="relative overflow-hidden border-b-[3px] border-b-background/35"
+          className="relative overflow-hidden border-b-[3px] border-b-background/35 torn-bottom"
           style={{ background: meta.color }}
         >
           <div

@@ -39,7 +39,7 @@ export default function AdminDashboardPage() {
   });
 
   return (
-    <div style={{ background: '#F3EEE5', minHeight: '100vh', fontFamily: "'Cormorant Garamond', serif" }}>
+    <div style={{ background: '#EDE1C4', minHeight: '100vh', fontFamily: "'Cormorant Garamond', serif" }}>
 
       {/* Header */}
       <div style={{ padding: '16px 20px 14px', borderBottom: '1px solid rgba(47,36,31,0.08)' }}>
@@ -52,7 +52,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px solid rgba(47,36,31,0.08)', background: '#E5E0CF' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px solid rgba(47,36,31,0.08)', background: '#E0D3AC' }}>
         <div style={{ padding: '14px 16px', borderRight: '1px solid rgba(47,36,31,0.06)', textAlign: 'center' }}>
           <div style={{ fontFamily: "'Cinzel Decorative', serif", fontSize: '26px', color: '#1C1A17', lineHeight: 1 }}>{total}</div>
           <div style={{ fontFamily: "'Special Elite', monospace", fontSize: '7px', color: '#A0907E', letterSpacing: '2px', marginTop: '4px' }}>TOTAL</div>

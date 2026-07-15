@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { HOUSE_META } from "@/lib/constants/houses";
+import { PAPER_NOISE_URL } from "@/lib/constants/textures";
+import { InkStamp } from "@/components/ui/InkStamp";
 import type { HouseKey } from "@/types";
 
 type HouseCardProps = {
@@ -78,7 +80,7 @@ function HouseIcon({ houseKey, color }: { houseKey: HouseKey; color: string }) {
               height: 9,
               border: `2.5px solid ${color}`,
               borderRadius: "5px 5px 0 0",
-              background: "#E5E0CF",
+              background: "#E0D3AC",
             }}
           />
         </div>
@@ -94,13 +96,17 @@ export function HouseCard({ houseKey, memberCount, onClick }: HouseCardProps) {
     <Link
       href={`/houses/${houseKey}`}
       onClick={onClick}
-      className="house-card"
+      className="house-card torn-bottom"
       style={{
-        background: "#E5E0CF",
+        background: "#E0D3AC",
         border: `1px solid rgba(${r},${g},${b},0.22)`,
         display: "block",
         textDecoration: "none",
         overflow: "hidden",
+        position: "relative",
+        isolation: "isolate",
+        boxShadow:
+          "0 10px 24px rgba(20,14,8,0.28), 0 3px 8px rgba(20,14,8,0.22), inset 0 0 28px rgba(20,14,8,0.24)",
         animation: "fadeIn 0.4s ease-out both",
       }}
     >
@@ -165,6 +171,30 @@ export function HouseCard({ houseKey, memberCount, onClick }: HouseCardProps) {
           {memberCount} AGENTS
         </div>
       </div>
+
+      {/* Stamp */}
+      <div style={{ position: "absolute", top: 8, right: 8 }}>
+        <InkStamp
+          rotate={8}
+          style={{ fontSize: 8, padding: "2px 6px", letterSpacing: 1.5 }}
+        >
+          File
+        </InkStamp>
+      </div>
+
+      {/* Paper grain */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url("${PAPER_NOISE_URL}")`,
+          backgroundSize: "160px 160px",
+          opacity: 0.35,
+          mixBlendMode: "multiply",
+          pointerEvents: "none",
+        }}
+      />
     </Link>
   );
 }

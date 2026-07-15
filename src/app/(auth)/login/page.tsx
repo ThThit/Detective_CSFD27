@@ -22,7 +22,7 @@ export default async function LoginPage({
       </p>
 
       <div
-        className="relative overflow-hidden flex flex-col items-center justify-center max-w-96 py-10 bg-background font-serif"
+        className="relative overflow-hidden flex flex-col items-center justify-center max-w-96 py-10 bg-background font-serif torn-edges"
       >
         {/* Scanline */}
         <div

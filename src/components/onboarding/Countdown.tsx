@@ -30,7 +30,7 @@ export default function Countdown() {
   }, []);
 
   return (
-    <div style={{ margin: '20px 0', background: '#E5E0CF', border: '1px solid rgba(168,106,42,0.28)' }}>
+    <div style={{ margin: '20px 0', background: '#E0D3AC', border: '1px solid rgba(168,106,42,0.28)' }}>
 
       {/* Header row */}
       <div style={{ padding: '12px 20px', borderBottom: '1px solid rgba(168,106,42,0.18)', display: 'flex', alignItems: 'center', gap: 10 }}>

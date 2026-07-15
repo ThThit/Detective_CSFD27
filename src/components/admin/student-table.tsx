@@ -29,7 +29,7 @@ export function StudentTable({ pairs, filter }: StudentTableProps) {
       <div style={{
         display: 'grid', gridTemplateColumns: '1fr 1fr 80px',
         padding: '9px 16px', borderBottom: '1px solid rgba(47,36,31,0.1)',
-        background: '#E5E0CF', position: 'sticky', top: 0,
+        background: '#E0D3AC', position: 'sticky', top: 0,
       }}>
         {['SENIOR', 'JUNIOR', 'STATUS'].map((h) => (
           <div key={h} style={{ fontFamily: "'Special Elite', monospace", fontSize: '7px', color: '#A0907E', letterSpacing: '2px' }}>{h}</div>

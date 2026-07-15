@@ -6,6 +6,7 @@ import { getSessionData } from "@/lib/auth";
 import { HOUSE_META, HOUSES, type House } from "@/lib/constants/houses";
 import { HouseCard } from "@/components/house/HouseCard";
 import { OnboardingOverlay } from "@/components/house/OnboardingOverlay";
+import { InkStamp } from "@/components/ui/InkStamp";
 
 export default async function HousesPage() {
   const session = await getSessionData();
@@ -41,8 +42,13 @@ export default async function HousesPage() {
         style={{
           padding: "28px 0 22px",
           borderBottom: "1px solid rgba(47,36,31,0.08)",
+          position: "relative",
         }}
       >
+        <div style={{ position: "absolute", top: 4, right: 0 }}>
+          <InkStamp>Confidential</InkStamp>
+        </div>
+
         <div
           style={{
             fontSize: 11,
