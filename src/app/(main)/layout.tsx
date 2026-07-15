@@ -1,5 +1,6 @@
 import { getSessionData } from "@/lib/auth";
 import { BottomTabs } from "@/components/layout/bottom-tabs";
+import { RouteTransition } from "@/components/layout/route-transition";
 
 export default async function MainLayout({
   children,
@@ -11,7 +12,7 @@ export default async function MainLayout({
 
   return (
     <>
-      {children}
+      <RouteTransition>{children}</RouteTransition>
       <BottomTabs isAdmin={isAdmin} />
     </>
   );

@@ -10,6 +10,7 @@ type Props = {
 
 export function OnboardingOverlay({ userHouse, children }: Props) {
   const [visible, setVisible] = useState(true);
+  const [closing, setClosing] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [nickname, setNickname] = useState("");
   const [error, setError] = useState("");
@@ -65,6 +66,9 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
 
       {visible && (
         <div
+          onAnimationEnd={() => {
+            if (closing) setVisible(false);
+          }}
           style={{
             position: "absolute",
             inset: 0,
@@ -73,7 +77,9 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
             flexDirection: "column",
             justifyContent: "flex-end",
             zIndex: 20,
-            animation: "overlayIn 0.3s ease-out both",
+            animation: closing
+              ? "overlayOut 0.3s ease-in both"
+              : "overlayIn 0.3s ease-out both",
           }}
         >
           <div
@@ -81,7 +87,9 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
               background: "#E0D3AC",
               borderTop: "1px solid rgba(168,106,42,0.28)",
               padding: "28px 24px 40px",
-              animation: "slideUp 0.35s ease-out both",
+              animation: closing
+                ? "slideDown 0.3s ease-in both"
+                : "slideUp 0.35s ease-out both",
             }}
           >
             {step === 1 ? (
@@ -330,7 +338,7 @@ export function OnboardingOverlay({ userHouse, children }: Props) {
                 </div>
 
                 <button
-                  onClick={() => setVisible(false)}
+                  onClick={() => setClosing(true)}
                   style={{
                     width: "100%",
                     background: "#A86A2A",

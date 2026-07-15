@@ -30,7 +30,7 @@ export function AgentCard({ student, className, delayMs = 0 }: AgentCardProps) {
   return (
     <Link
       href={`/agent/${student.id}`}
-      className={cn("block no-underline text-inherit p-3 bg-surface border border-dark/10", className)}
+      className={cn("agent-card block no-underline text-inherit p-3 bg-surface border border-dark/10", className)}
       style={{ animation: `fadeIn 0.4s ease-out ${delayMs}ms both` }}
     >
       <div

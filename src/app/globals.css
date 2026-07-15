@@ -43,6 +43,15 @@ body::after {
   box-sizing: border-box;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @keyframes pulse { 0%,49%{opacity:1}50%,99%{opacity:0.2} }
 @keyframes scanline { 0%{top:-10%} 100%{top:110%} }
 @keyframes stampIn { from{opacity:0;transform:scale(1.5) rotate(-14deg)} to{opacity:1;transform:scale(1) rotate(-5deg)} }
@@ -54,6 +63,8 @@ body::after {
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
 @keyframes closedStamp { 0%{opacity:0;transform:scale(1.6) rotate(-10deg)} 60%{transform:scale(0.97) rotate(-3deg);opacity:1} 100%{transform:scale(1) rotate(-3deg);opacity:1} }
 @keyframes revealUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes overlayOut { from{opacity:1} to{opacity:0} }
+@keyframes slideDown { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(40px)} }
 
 /* Torn/deckled paper edges — shallow zigzag clip-paths, ~4% notch depth so
    existing padding keeps content clear of the cut. */
@@ -100,3 +111,9 @@ body::after {
 
 .cta-btn { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(168,106,42,0.3); }
+
+.agent-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.agent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(20,14,8,0.18), 0 2px 6px rgba(20,14,8,0.14);
+}
