@@ -27,7 +27,7 @@ export async function proxy(request: NextRequest) {
     }
   } else if (pathname.startsWith("/houses") || pathname.startsWith("/agent")) {
     if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/api/auth/login", request.url));
     }
   }
 

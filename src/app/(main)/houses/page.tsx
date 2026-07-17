@@ -10,7 +10,7 @@ import { InkStamp } from "@/components/ui/InkStamp";
 
 export default async function HousesPage() {
   const session = await getSessionData();
-  if (!session) redirect("/login");
+  if (!session) redirect("/api/auth/login");
 
   const [userRows, ...houseCounts] = await Promise.all([
     db.select().from(student).where(eq(student.id, session.userId)),
@@ -23,7 +23,7 @@ export default async function HousesPage() {
   ]);
 
   const user = userRows[0];
-  if (!user) redirect("/login");
+  if (!user) redirect("/api/auth/login");
 
   const memberCounts = Object.fromEntries(
     HOUSES.map((house, i) => [house, houseCounts[i].length]),

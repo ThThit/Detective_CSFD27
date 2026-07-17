@@ -2,7 +2,25 @@ import Image from "next/image";
 import Countdown from "../components/onboarding/Countdown";
 import CtaButton from "../components/onboarding/CtaButton";
 
-export default function Home() {
+const ERROR_MESSAGES: Record<string, string> = {
+  unauthorized_account:
+    "ACCESS DENIED — this account is not authorized for CSFD27.",
+  invalid_state:
+    "AUTHENTICATION FAILED — invalid or expired session. Please try again.",
+  token_exchange_failed:
+    "AUTHENTICATION FAILED — could not complete sign-in. Please try again.",
+  graph_failed:
+    "AUTHENTICATION FAILED — could not retrieve account details. Please try again.",
+};
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const errorMessage =
+    typeof params.error === "string" ? ERROR_MESSAGES[params.error] : undefined;
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar — full width */}
@@ -162,18 +180,31 @@ export default function Home() {
 
           {/* CTA */}
           <div className="pb-5">
+            {errorMessage && (
+              <div className="mb-3 px-3 py-2.5 font-mono text-[9px] tracking-wide bg-danger/8 border border-danger/25 text-danger">
+                ✕ {errorMessage}
+              </div>
+            )}
             <div className="text-[11px] text-muted tracking-[3px] text-center mb-3 font-mono">
               — OPERATIVE ACCESS REQUIRED —
             </div>
             <CtaButton />
+            <p
+            className="font-mono text-[9px] tracking-wide text-center text-muted-fg mt-2"
+            // style={{ animation: "fadeIn 0.6s ease-out 0.27s both" }}
+          >
+            Use your <span className="text-accent">@ad.sit.kmutt.ac.th</span>{" "}
+            account to sign in.
+          </p>
           </div>
 
+
           {/* Footer */}
-          <div className="mt-auto py-4 pb-8 text-center border-t border-foreground/[0.08]">
+          {/*<div className="mt-auto py-4 pb-8 text-center border-t border-foreground/[0.08]">
             <div className="text-[9px] text-subtle tracking-[3px] font-mono">
               CSFD27 · SIT · KMUTT
             </div>
-          </div>
+          </div>*/}
         </div>
       </div>
     </div>

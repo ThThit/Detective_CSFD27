@@ -26,7 +26,7 @@ export default async function AgentProfilePage({
   let resolvedId: string;
   if (isMe) {
     const session = await getSessionData();
-    if (!session) redirect("/login");
+    if (!session) redirect("/api/auth/login");
     resolvedId = session.userId;
   } else {
     if (!uuidPattern.test(id)) notFound();

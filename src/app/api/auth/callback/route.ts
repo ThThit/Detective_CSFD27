@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   if (!code || !state || state !== storedState || !verifier) {
     return NextResponse.redirect(
-      new URL("/login?error=invalid_state", request.url),
+      new URL("/?error=invalid_state", request.url),
     );
   }
 
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
       tokens.error_description,
     );
     return NextResponse.redirect(
-      new URL("/login?error=token_exchange_failed", request.url),
+      new URL("/?error=token_exchange_failed", request.url),
     );
   }
 
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
   if (!graphRes.ok) {
     console.error("[auth/callback] graph /me failed:", graphRes.status);
     return NextResponse.redirect(
-      new URL("/login?error=graph_failed", request.url),
+      new URL("/?error=graph_failed", request.url),
     );
   }
   const graphUser = (await graphRes.json()) as {
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
   if (!email) {
     console.error("[auth/callback] graph /me returned no email");
     return NextResponse.redirect(
-      new URL("/login?error=graph_failed", request.url),
+      new URL("/?error=graph_failed", request.url),
     );
   }
   const displayName = graphUser.displayName;
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
   const [localPart, domain] = email.split("@");
   if (domain !== "ad.sit.kmutt.ac.th" || !/^6[89]/.test(localPart)) {
     return NextResponse.redirect(
-      new URL("/login?error=unauthorized_account", request.url),
+      new URL("/?error=unauthorized_account", request.url),
     );
   }
 

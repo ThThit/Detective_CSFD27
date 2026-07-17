@@ -12,9 +12,13 @@ export default function CtaButton() {
     setChecking(true);
     try {
       const res = await fetch('/api/auth/me');
-      router.push(res.ok ? '/houses' : '/login');
+      if (res.ok) {
+        router.push('/houses');
+      } else {
+        window.location.href = '/api/auth/login';
+      }
     } catch {
-      router.push('/login');
+      window.location.href = '/api/auth/login';
     } finally {
       setChecking(false);
     }
@@ -22,31 +26,20 @@ export default function CtaButton() {
 
   return (
     <a
-      href="/login"
+      href="/api/auth/login"
       onClick={handleClick}
-      className="cta-btn"
-      style={{
-        display: 'block',
-        textDecoration: 'none',
-        background: '#EDE1C4',
-        border: '1px solid rgba(168,106,42,0.3)',
-        borderBottom: '2px solid #A86A2A',
-        padding: '16px 20px',
-        opacity: checking ? 0.7 : 1,
-        pointerEvents: checking ? 'none' : 'auto',
-        transition: 'opacity 0.15s ease',
-      }}
+      className={`cta-btn block no-underline bg-background border border-accent/30 border-b-2 border-b-accent px-5 py-4 transition-opacity duration-150 ${checking ? 'opacity-70 pointer-events-none' : 'opacity-100 pointer-events-auto'}`}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#8b2020', animation: 'pulse 1s step-end infinite', flexShrink: 0 }} />
-        <div style={{ fontSize: 8, color: '#8b2020', letterSpacing: 3, fontFamily: 'var(--font-special-elite), monospace' }}>NEW OBJECTIVE</div>
-        <div style={{ flex: 1, height: 1, background: 'rgba(139,32,32,0.2)' }} />
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-1.5 h-1.5 rounded-full bg-danger animate-[pulse_1s_step-end_infinite] shrink-0" />
+        <div className="text-[8px] text-danger tracking-[3px] font-mono">NEW OBJECTIVE</div>
+        <div className="flex-1 h-px bg-danger/20" />
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontFamily: 'var(--font-cinzel-decorative), serif', fontSize: 16, color: '#1C1A17', letterSpacing: 1 }}>
+      <div className="flex items-center justify-between">
+        <div className="font-display text-base text-foreground tracking-[1px]">
           {checking ? 'Verifying...' : 'Begin Investigation'}
         </div>
-        <div style={{ fontFamily: 'var(--font-cinzel-decorative), serif', fontSize: 20, color: '#A86A2A', lineHeight: 1 }}>›</div>
+        <div className="font-display text-xl text-accent leading-none">›</div>
       </div>
     </a>
   );
