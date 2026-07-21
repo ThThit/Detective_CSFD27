@@ -7,7 +7,7 @@ export function RouteTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div key={pathname} className="flex flex-col flex-1 pb-10" style={{ animation: "fadeIn 0.35s ease-out both" }}>
+    <div key={pathname} className="flex flex-col flex-1 pb-14" style={{ animation: "fadeIn 0.35s ease-out both" }}>
       {children}
     </div>
   );

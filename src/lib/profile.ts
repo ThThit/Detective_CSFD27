@@ -115,9 +115,24 @@ export async function applyProfileUpdate(
 
   if (body.profilePic !== undefined) {
     const { contentType, buffer } = parseImageDataUri(body.profilePic);
-    const url = await uploadToR2(`profiles/${userId}.jpg`, buffer, contentType);
-    // The key is stable per user, so bust the CDN/browser cache to show the new pic.
-    updates.profileUrl = `${url}?v=${Date.now()}`;
+
+    const [existing] = await db
+      .select({ nickname: student.nickname, studentId: student.studentId })
+      .from(student)
+      .where(eq(student.id, userId));
+    const nickname = updates.nickname ?? existing?.nickname ?? undefined;
+
+    const url = await uploadToR2(
+      `production/profiles/${crypto.randomUUID()}.jpg`,
+      buffer,
+      contentType,
+      {
+        userId,
+        ...(nickname ? { nickname } : {}),
+        ...(existing?.studentId ? { studentId: existing.studentId } : {}),
+      },
+    );
+    updates.profileUrl = url;
   }
 
   for (const field of ['instagram', 'discord', 'line'] as const) {
