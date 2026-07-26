@@ -1,38 +1,14 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { HintCard } from "@/components/hints/hint-card";
 import { HOUSE_META } from "@/lib/constants/houses";
 import type { Hint, MenteeCase } from "@/types";
 import { FileItem } from "../house/FileItem";
 import { HintCardInline } from "../agent/AccusationTerminal";
 
-export function HintsSection() {
-  const [hints, setHints] = useState<Hint[]>([]);
-  const [cases, setCases] = useState<MenteeCase[]>([]);
-  const [loading, setLoading] = useState(true);
+type Props = {
+  hints: Hint[];
+  cases: MenteeCase[];
+};
 
-  useEffect(() => {
-    Promise.all([
-      fetch("/api/hints").then((r) => r.json()),
-      fetch("/api/auth/me").then((r) => r.json()),
-    ])
-      .then(([hintsData, meData]) => {
-        setHints(hintsData.hints ?? []);
-        setCases(meData.cases ?? []);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="py-5 text-center text-[13px] min-[440px]:text-[11px] tracking-[2px] text-[#A0907E] [font-family:'Special_Elite',monospace]">
-        LOADING...
-      </div>
-    );
-  }
-
+export function HintsSection({ hints, cases }: Props) {
   return (
     <div className="mt-8">
       {/* ── ASSIGNED CASE(S) ── */}

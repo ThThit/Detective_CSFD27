@@ -4,10 +4,10 @@ import { HintsSection } from "@/components/hints/hints-section";
 import { db } from "@/db";
 import { student, pcode, hint } from "@/db/schema";
 import { getSessionData } from "@/lib/auth";
-import { toPublicStudent, toHint } from "@/lib/mappers";
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { toPublicStudent, toHint, toHintsAcrossPcodes } from "@/lib/mappers";
+import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
-import type { Hint } from "@/types";
+import type { Hint, MenteeCase } from "@/types";
 
 type AgentProfilePageProps = {
   params: Promise<{ id: string }>;
@@ -45,6 +45,7 @@ export default async function AgentProfilePage({
   const caseNumber = `#2027-CSFD-${publicStudent.house.toUpperCase().slice(0, 3)}-${publicStudent.studentId.slice(-3)}`;
 
   let hints: Hint[] = [];
+  let cases: MenteeCase[] = [];
   let isFound = false;
   let solvedSenior: {
     displayName: string;
@@ -84,6 +85,53 @@ export default async function AgentProfilePage({
         }
       }
     }
+  } else if (
+    isMe &&
+    (row.role === "senior" || row.role === "house_leader")
+  ) {
+    const pcodeRows = await db
+      .select()
+      .from(pcode)
+      .where(and(eq(pcode.seniorId, row.id), isNull(pcode.deletedAt)));
+
+    if (pcodeRows.length > 0) {
+      const menteeRows = await db
+        .select()
+        .from(student)
+        .where(
+          inArray(
+            student.id,
+            pcodeRows.map((p) => p.juniorId),
+          ),
+        );
+      const menteeById = new Map(menteeRows.map((m) => [m.id, m]));
+
+      cases = pcodeRows.flatMap((p) => {
+        const menteeRow = menteeById.get(p.juniorId);
+        if (!menteeRow) return [];
+        return [
+          {
+            pcodeId: p.id,
+            mentee: toPublicStudent(menteeRow),
+            isFound: p.foundAt !== null,
+          },
+        ];
+      });
+
+      const hintRows = await db
+        .select()
+        .from(hint)
+        .where(
+          and(
+            inArray(
+              hint.pcodeId,
+              pcodeRows.map((p) => p.id),
+            ),
+            isNull(hint.deletedAt),
+          ),
+        );
+      hints = toHintsAcrossPcodes(hintRows);
+    }
   }
 
   return (
@@ -96,7 +144,7 @@ export default async function AgentProfilePage({
           (publicStudent.role === "senior" ||
             publicStudent.role === "house_leader") && (
             <div className="mx-auto max-w-content mt-6">
-              <HintsSection />
+              <HintsSection hints={hints} cases={cases} />
             </div>
           )}
 
