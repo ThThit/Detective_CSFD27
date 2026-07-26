@@ -1,6 +1,5 @@
 import { FileItem } from "@/components/house/FileItem";
 import { MascotAvatar } from "@/components/house/MascotAvatar";
-import { OnboardingOverlay } from "@/components/house/OnboardingOverlay";
 import { db } from "@/db";
 import { student } from "@/db/schema";
 import { getSessionData } from "@/lib/auth";
@@ -105,14 +104,6 @@ export default async function HousesPage() {
       </div>
     </div>
   );
-
-  if (user.nickname === null) {
-    return (
-      <OnboardingOverlay userHouse={user.house as House}>
-        {grid}
-      </OnboardingOverlay>
-    );
-  }
 
   return <div className="flex-1 overflow-y-auto">{grid}</div>;
 }
