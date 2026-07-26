@@ -113,11 +113,11 @@ function HintHeader({
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, opacity: dimmed ? 0.45 : 1 }}>
         <div style={{ width: 5, height: 5, background: dot, borderRadius: "50%" }} />
-        <span style={{ fontSize: 8, color: text, letterSpacing: 2, fontFamily: FONT_MONO }}>
+        <span className="text-[10px] min-[440px]:text-[8px]" style={{ color: text, letterSpacing: 2, fontFamily: FONT_MONO }}>
           HINT {index} · {label}
         </span>
       </div>
-      <span style={{ fontSize: 8, color: dimmed ? "#C4B8A8" : "#A0907E", letterSpacing: 1, fontFamily: FONT_MONO }}>
+      <span className="text-[10px] min-[440px]:text-[8px]" style={{ color: dimmed ? "#C4B8A8" : "#A0907E", letterSpacing: 1, fontFamily: FONT_MONO }}>
         {dateLabel}
       </span>
     </div>
@@ -128,9 +128,9 @@ function HintQuote({ content }: { content: string }) {
   return (
     <div style={{ padding: "12px 14px" }}>
       <p
+        className="text-[17px] min-[440px]:text-[14px]"
         style={{
           margin: 0,
-          fontSize: 14,
           color: "#2F241F",
           lineHeight: 1.65,
           fontStyle: "italic",
@@ -169,7 +169,7 @@ function JuniorSealedBody() {
           padding: "3px 8px",
         }}
       >
-        <span style={{ fontFamily: FONT_MONO, fontSize: 10, color: "rgba(139,32,32,0.5)", letterSpacing: 2 }}>
+        <span className="text-[12px] min-[440px]:text-[10px]" style={{ fontFamily: FONT_MONO, color: "rgba(139,32,32,0.5)", letterSpacing: 2 }}>
           SEALED
         </span>
       </div>
@@ -209,7 +209,7 @@ function SeniorSealedBody() {
             opacity: 0.6,
           }}
         />
-        <span style={{ fontSize: 9, color: "#C4B8A8", letterSpacing: 1, whiteSpace: "nowrap", fontFamily: FONT_MONO }}>
+        <span className="text-[11px] min-[440px]:text-[9px]" style={{ color: "#C4B8A8", letterSpacing: 1, whiteSpace: "nowrap", fontFamily: FONT_MONO }}>
           EMPTY
         </span>
       </div>

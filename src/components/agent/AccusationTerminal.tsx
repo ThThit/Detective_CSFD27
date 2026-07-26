@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import type { Hint } from "@/types";
+import Image from "next/image";
+import { useState } from "react";
 
 type SolvedSenior = {
   displayName: string;
@@ -102,7 +102,18 @@ export function AccusationTerminal({
     return (
       <div className="bg-background relative min-h-fit flex flex-col items-center justify-center px-6 py-8 text-center animate-[overlayIn_0.4s_ease-out_both]">
         {/* Stamp */}
-        <div className="inline-block border-[3px] border-success px-6 py-[7px] mb-5 animate-[closedStamp_0.8s_ease-out_both]">
+        <div className="flex items-center gap-3 border-[3px] border-success px-3 py-[7px] mb-5 mt-2 animate-[closedStamp_0.8s_ease-out_both]">
+          <div
+            className={`w-10 h-10 rounded-full mx-auto overflow-hidden flex items-center justify-center`}
+          >
+            <Image
+              src="/logo.jpg"
+              alt=""
+              className="w-full h-full object-cover"
+              width={300}
+              height={300}
+            />
+          </div>
           <div className="font-display text-[20px] text-success tracking-[3px]">
             CASE CLOSED
           </div>
@@ -206,7 +217,7 @@ export function AccusationTerminal({
       </div>
 
       {/* Terminal block */}
-      <div className="bg-background border border-danger/20 overflow-hidden mb-6">
+      <div className="bg-surface border border-danger/20 overflow-hidden mb-6">
         {/* Header row */}
         <div className="py-2.5 px-3.5 border-b border-danger/12 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -299,7 +310,7 @@ export function AccusationTerminal({
       {/* Evidence section */}
       {initialHints.length > 0 && (
         <>
-          <div className="text-[10px] text-muted-fg tracking-[3px] uppercase mb-2.5 font-mono">
+          <div className="text-[10px] text-danger tracking-[3px] uppercase mb-2.5 font-mono">
             EVIDENCE ON HAND
           </div>
           {initialHints.map((h, i) => (
@@ -311,7 +322,7 @@ export function AccusationTerminal({
   );
 }
 
-function HintCardInline({ hint, index }: { hint: Hint; index: number }) {
+export function HintCardInline({ hint, index }: { hint: Hint; index: number }) {
   const revealDate = new Date(hint.revealDate)
     .toLocaleDateString("en-GB", {
       day: "2-digit",

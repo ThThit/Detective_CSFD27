@@ -13,9 +13,7 @@ export async function GET(request: NextRequest) {
   const verifier = request.cookies.get("oauth_verifier")?.value;
 
   if (!code || !state || state !== storedState || !verifier) {
-    return NextResponse.redirect(
-      new URL("/?error=invalid_state", request.url),
-    );
+    return NextResponse.redirect(new URL("/?error=invalid_state", request.url));
   }
 
   const tokenRes = await fetch(
@@ -56,9 +54,7 @@ export async function GET(request: NextRequest) {
   });
   if (!graphRes.ok) {
     console.error("[auth/callback] graph /me failed:", graphRes.status);
-    return NextResponse.redirect(
-      new URL("/?error=graph_failed", request.url),
-    );
+    return NextResponse.redirect(new URL("/?error=graph_failed", request.url));
   }
   const graphUser = (await graphRes.json()) as {
     displayName: string;
@@ -69,9 +65,7 @@ export async function GET(request: NextRequest) {
   const email = graphUser.mail ?? graphUser.userPrincipalName;
   if (!email) {
     console.error("[auth/callback] graph /me returned no email");
-    return NextResponse.redirect(
-      new URL("/?error=graph_failed", request.url),
-    );
+    return NextResponse.redirect(new URL("/?error=graph_failed", request.url));
   }
   const displayName = graphUser.displayName;
 

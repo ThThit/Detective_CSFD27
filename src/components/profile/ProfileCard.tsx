@@ -29,7 +29,7 @@ type ProfileCardProps = {
   editable?: boolean;
 };
 
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
 
 const roleLabels: Record<ProfileCardStudent["role"], string> = {
@@ -364,7 +364,7 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
       return;
     }
     if (file.size > MAX_IMAGE_BYTES) {
-      setError("Image is too large (max 2MB).");
+      setError("Image is too large (max 5MB).");
       event.target.value = "";
       return;
     }
@@ -503,7 +503,7 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
       />
 
       <div className="mb-3.5 relative flex items-center justify-between gap-3 flex-wrap">
-        <div className="text-[10px] text-danger tracking-[4px] uppercase font-mono whitespace-nowrap">
+        <div className="text-[10px] text-danger tracking-[2px] uppercase font-mono whitespace-nowrap">
           AGENT DOSSIER · {editing ? "EDITING" : "READ ONLY"}
         </div>
         {editable && (

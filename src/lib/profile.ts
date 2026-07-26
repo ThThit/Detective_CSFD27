@@ -17,8 +17,8 @@ import type { PublicStudent } from '@/types';
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'] as const;
 type AllowedImageType = (typeof ALLOWED_IMAGE_TYPES)[number];
 
-// ~2MB of binary ≈ 2.7M base64 characters.
-const MAX_BASE64_LENGTH = 2_700_000;
+// ~5MB of binary ≈ 6.99M base64 characters.
+const MAX_BASE64_LENGTH = 7_000_000;
 
 export type ProfilePatchInput = {
   nickname?: string;
@@ -85,7 +85,7 @@ export function parseImageDataUri(
     throw new ProfileValidationError('profilePic must be a JPEG or PNG image');
   }
   if (base64.length > MAX_BASE64_LENGTH) {
-    throw new ProfileValidationError('Image is too large (max ~2MB)');
+    throw new ProfileValidationError('Image is too large (max ~5MB)');
   }
 
   return {

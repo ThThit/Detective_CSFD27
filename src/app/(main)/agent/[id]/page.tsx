@@ -101,7 +101,7 @@ export default async function AgentProfilePage({
           )}
 
         {isMe && row.role === "junior" && (
-          <section className="bg-surface relative overflow-hidden max-w-content mx-auto mt-4">
+          <section className="relative overflow-hidden max-w-content mx-auto mt-4">
             <AccusationTerminal
               initialGuessLeft={row.guessLeft}
               initialIsFound={isFound}

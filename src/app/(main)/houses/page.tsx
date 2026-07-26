@@ -25,10 +25,11 @@ export default async function HousesPage() {
   const user = userRows[0];
   if (!user) redirect("/api/auth/login");
 
-  if (Date.now() - user.updatedAt.getTime() > 60_000) {
+  const now = new Date();
+  if (now.getTime() - user.updatedAt.getTime() > 60_000) {
     await db
       .update(student)
-      .set({ updatedAt: new Date() })
+      .set({ updatedAt: now })
       .where(eq(student.id, user.id));
   }
 
