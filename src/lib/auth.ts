@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 export type SessionData = {
   userId: string;
@@ -26,7 +27,10 @@ export async function setSession(data: SessionData): Promise<void> {
   cookieStore.set(COOKIE_NAME, token, cookieOptions);
 }
 
-export async function getSessionData(): Promise<SessionData | null> {
+// Memoized per-request: layouts and pages rendered in the same request
+// (e.g. (main)/layout.tsx + agent/[id]/page.tsx) can both call this without
+// re-decoding/re-verifying the cookie more than once.
+export const getSessionData = cache(async (): Promise<SessionData | null> => {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
@@ -39,7 +43,7 @@ export async function getSessionData(): Promise<SessionData | null> {
   } catch {
     return null;
   }
-}
+});
 
 export async function destroySession(): Promise<void> {
   const cookieStore = await cookies();

@@ -3,7 +3,7 @@ import { AccusationTerminal } from "@/components/agent/AccusationTerminal";
 import { HintsSection } from "@/components/hints/hints-section";
 import { db } from "@/db";
 import { student, pcode, hint } from "@/db/schema";
-import { getSessionData } from "@/lib/auth";
+import { getCurrentStudent } from "@/lib/current-student";
 import { toPublicStudent, toHint, toHintsAcrossPcodes } from "@/lib/mappers";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
@@ -23,23 +23,19 @@ export default async function AgentProfilePage({
 
   const isMe = id === "me";
 
-  let resolvedId: string;
+  let row;
   if (isMe) {
-    const session = await getSessionData();
-    if (!session) redirect("/api/auth/login");
-    resolvedId = session.userId;
+    row = await getCurrentStudent();
+    if (!row) redirect("/api/auth/login");
   } else {
     if (!uuidPattern.test(id)) notFound();
-    resolvedId = id;
+    [row] = await db
+      .select()
+      .from(student)
+      .where(and(eq(student.id, id), isNull(student.deletedAt)))
+      .limit(1);
+    if (!row) notFound();
   }
-
-  const [row] = await db
-    .select()
-    .from(student)
-    .where(and(eq(student.id, resolvedId), isNull(student.deletedAt)))
-    .limit(1);
-
-  if (!row) notFound();
 
   const publicStudent = toPublicStudent(row);
   const caseNumber = `#2027-CSFD-${publicStudent.house.toUpperCase().slice(0, 3)}-${publicStudent.studentId.slice(-3)}`;
@@ -62,19 +58,25 @@ export default async function AgentProfilePage({
       .where(and(eq(pcode.juniorId, row.id), isNull(pcode.deletedAt)));
     if (pcodeRow) {
       isFound = pcodeRow.foundAt !== null;
-      const hintRows = await db
-        .select()
-        .from(hint)
-        .where(and(eq(hint.pcodeId, pcodeRow.id), isNull(hint.deletedAt)))
-        .orderBy(asc(hint.createdAt), asc(hint.id));
+
+      const [hintRows, seniorRow] = await Promise.all([
+        db
+          .select()
+          .from(hint)
+          .where(and(eq(hint.pcodeId, pcodeRow.id), isNull(hint.deletedAt)))
+          .orderBy(asc(hint.createdAt), asc(hint.id)),
+        isFound
+          ? db
+              .select()
+              .from(student)
+              .where(eq(student.id, pcodeRow.seniorId))
+              .then((rows) => rows[0])
+          : Promise.resolve(undefined),
+      ]);
       hints = hintRows.map((r, i) => toHint(r, i));
 
       if (isFound) {
         solvedAt = pcodeRow.foundAt!.toISOString();
-        const [seniorRow] = await db
-          .select()
-          .from(student)
-          .where(eq(student.id, pcodeRow.seniorId));
         if (seniorRow) {
           solvedSenior = {
             displayName: seniorRow.displayName,
@@ -95,15 +97,29 @@ export default async function AgentProfilePage({
       .where(and(eq(pcode.seniorId, row.id), isNull(pcode.deletedAt)));
 
     if (pcodeRows.length > 0) {
-      const menteeRows = await db
-        .select()
-        .from(student)
-        .where(
-          inArray(
-            student.id,
-            pcodeRows.map((p) => p.juniorId),
+      const [menteeRows, hintRows] = await Promise.all([
+        db
+          .select()
+          .from(student)
+          .where(
+            inArray(
+              student.id,
+              pcodeRows.map((p) => p.juniorId),
+            ),
           ),
-        );
+        db
+          .select()
+          .from(hint)
+          .where(
+            and(
+              inArray(
+                hint.pcodeId,
+                pcodeRows.map((p) => p.id),
+              ),
+              isNull(hint.deletedAt),
+            ),
+          ),
+      ]);
       const menteeById = new Map(menteeRows.map((m) => [m.id, m]));
 
       cases = pcodeRows.flatMap((p) => {
@@ -117,19 +133,6 @@ export default async function AgentProfilePage({
           },
         ];
       });
-
-      const hintRows = await db
-        .select()
-        .from(hint)
-        .where(
-          and(
-            inArray(
-              hint.pcodeId,
-              pcodeRows.map((p) => p.id),
-            ),
-            isNull(hint.deletedAt),
-          ),
-        );
       hints = toHintsAcrossPcodes(hintRows);
     }
   }
