@@ -5,9 +5,13 @@ import { db } from "@/db";
 import { student, pcode, hint } from "@/db/schema";
 import { getCurrentStudent } from "@/lib/current-student";
 import { toPublicStudent, toHint, toHintsAcrossPcodes } from "@/lib/mappers";
-import { and, asc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { notFound, redirect } from "next/navigation";
 import type { Hint, MenteeCase } from "@/types";
+
+const seniorStudent = alias(student, "senior_student");
+const menteeStudent = alias(student, "mentee_student");
 
 type AgentProfilePageProps = {
   params: Promise<{ id: string }>;
@@ -52,31 +56,24 @@ export default async function AgentProfilePage({
   let solvedAt: string | null = null;
 
   if (isMe && row.role === "junior") {
-    const [pcodeRow] = await db
-      .select()
+    const rows = await db
+      .select({ pcode, hint, senior: seniorStudent })
       .from(pcode)
-      .where(and(eq(pcode.juniorId, row.id), isNull(pcode.deletedAt)));
+      .leftJoin(hint, and(eq(hint.pcodeId, pcode.id), isNull(hint.deletedAt)))
+      .leftJoin(seniorStudent, eq(seniorStudent.id, pcode.seniorId))
+      .where(and(eq(pcode.juniorId, row.id), isNull(pcode.deletedAt)))
+      .orderBy(asc(hint.createdAt), asc(hint.id));
+
+    const pcodeRow = rows[0]?.pcode;
     if (pcodeRow) {
       isFound = pcodeRow.foundAt !== null;
 
-      const [hintRows, seniorRow] = await Promise.all([
-        db
-          .select()
-          .from(hint)
-          .where(and(eq(hint.pcodeId, pcodeRow.id), isNull(hint.deletedAt)))
-          .orderBy(asc(hint.createdAt), asc(hint.id)),
-        isFound
-          ? db
-              .select()
-              .from(student)
-              .where(eq(student.id, pcodeRow.seniorId))
-              .then((rows) => rows[0])
-          : Promise.resolve(undefined),
-      ]);
+      const hintRows = rows.flatMap((r) => (r.hint ? [r.hint] : []));
       hints = hintRows.map((r, i) => toHint(r, i));
 
       if (isFound) {
         solvedAt = pcodeRow.foundAt!.toISOString();
+        const seniorRow = rows[0]?.senior;
         if (seniorRow) {
           solvedSenior = {
             displayName: seniorRow.displayName,
@@ -91,50 +88,36 @@ export default async function AgentProfilePage({
     isMe &&
     (row.role === "senior" || row.role === "house_leader")
   ) {
-    const pcodeRows = await db
-      .select()
+    const rows = await db
+      .select({ pcode, mentee: menteeStudent, hint })
       .from(pcode)
+      .leftJoin(menteeStudent, eq(menteeStudent.id, pcode.juniorId))
+      .leftJoin(hint, and(eq(hint.pcodeId, pcode.id), isNull(hint.deletedAt)))
       .where(and(eq(pcode.seniorId, row.id), isNull(pcode.deletedAt)));
 
-    if (pcodeRows.length > 0) {
-      const [menteeRows, hintRows] = await Promise.all([
-        db
-          .select()
-          .from(student)
-          .where(
-            inArray(
-              student.id,
-              pcodeRows.map((p) => p.juniorId),
-            ),
-          ),
-        db
-          .select()
-          .from(hint)
-          .where(
-            and(
-              inArray(
-                hint.pcodeId,
-                pcodeRows.map((p) => p.id),
-              ),
-              isNull(hint.deletedAt),
-            ),
-          ),
-      ]);
-      const menteeById = new Map(menteeRows.map((m) => [m.id, m]));
-
-      cases = pcodeRows.flatMap((p) => {
-        const menteeRow = menteeById.get(p.juniorId);
-        if (!menteeRow) return [];
-        return [
-          {
-            pcodeId: p.id,
-            mentee: toPublicStudent(menteeRow),
-            isFound: p.foundAt !== null,
-          },
-        ];
-      });
-      hints = toHintsAcrossPcodes(hintRows);
+    const pcodeById = new Map<
+      string,
+      { pcode: typeof pcode.$inferSelect; mentee: typeof student.$inferSelect | null }
+    >();
+    const hintRows: (typeof hint.$inferSelect)[] = [];
+    for (const r of rows) {
+      if (!pcodeById.has(r.pcode.id)) {
+        pcodeById.set(r.pcode.id, { pcode: r.pcode, mentee: r.mentee });
+      }
+      if (r.hint) hintRows.push(r.hint);
     }
+
+    cases = Array.from(pcodeById.values()).flatMap(({ pcode: p, mentee }) => {
+      if (!mentee) return [];
+      return [
+        {
+          pcodeId: p.id,
+          mentee: toPublicStudent(mentee),
+          isFound: p.foundAt !== null,
+        },
+      ];
+    });
+    hints = toHintsAcrossPcodes(hintRows);
   }
 
   return (
