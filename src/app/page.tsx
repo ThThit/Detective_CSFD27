@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Countdown from "../components/onboarding/Countdown";
 import CtaButton from "../components/onboarding/CtaButton";
+import { getSessionData } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 const ERROR_MESSAGES: Record<string, string> = {
   unauthorized_account:
@@ -18,6 +20,9 @@ export default async function Home({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const session = await getSessionData();
+  if (session) redirect("/houses");
+
   const params = await searchParams;
   const errorMessage =
     typeof params.error === "string" ? ERROR_MESSAGES[params.error] : undefined;
@@ -190,14 +195,13 @@ export default async function Home({
             </div>
             <CtaButton />
             <p
-            className="font-mono text-[11px] tracking-wide text-center text-muted-fg mt-2"
-            // style={{ animation: "fadeIn 0.6s ease-out 0.27s both" }}
-          >
-            Use your <span className="text-accent">@ad.sit.kmutt.ac.th</span>{" "}
-            account to sign in.
-          </p>
+              className="font-mono text-[11px] tracking-wide text-center text-muted-fg mt-2"
+              // style={{ animation: "fadeIn 0.6s ease-out 0.27s both" }}
+            >
+              Use your <span className="text-accent">@ad.sit.kmutt.ac.th</span>{" "}
+              account to sign in.
+            </p>
           </div>
-
 
           {/* Footer */}
           {/*<div className="mt-auto py-4 pb-8 text-center border-t border-foreground/[0.08]">

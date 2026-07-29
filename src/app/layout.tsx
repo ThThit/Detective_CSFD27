@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Cinzel_Decorative, Cormorant_Garamond, Special_Elite } from "next/font/google";
+import {
+  Cinzel_Decorative,
+  Cormorant_Garamond,
+  Special_Elite,
+} from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
+
 import "./globals.css";
 
 const cinzelDecorative = Cinzel_Decorative({
@@ -23,7 +29,8 @@ const specialElite = Special_Elite({
 
 export const metadata: Metadata = {
   title: "CSFD 27 · CS First Date 2027",
-  description: "Seniors have gone undercover. Junior operatives must identify their assigned mentor before the deadline.",
+  description:
+    "Seniors have gone undercover. Junior operatives must identify their assigned mentor before the deadline.",
 };
 
 export default function RootLayout({
@@ -37,7 +44,10 @@ export default function RootLayout({
       className={`${cinzelDecorative.variable} ${cormorantGaramond.variable} ${specialElite.variable} h-full`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <NextTopLoader color='#9d6327'/>
+        {children}
+      </body>
     </html>
   );
 }
