@@ -28,7 +28,7 @@ const specialElite = Special_Elite({
 });
 
 export const metadata: Metadata = {
-  title: "CSFD 27 · CS First Date 2027",
+  title: "CSFD 26 · CS First Date 2026",
   description:
     "Seniors have gone undercover. Junior operatives must identify their assigned mentor before the deadline.",
 };
