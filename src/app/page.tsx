@@ -21,7 +21,8 @@ export default async function Home({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const session = await getSessionData();
-  if (session) redirect("/houses");
+  if (session) redirect(`${process.env.NEXT_PUBLIC_APP_URL}/houses`);
+
 
   const params = await searchParams;
   const errorMessage =

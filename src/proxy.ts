@@ -23,11 +23,11 @@ export async function proxy(request: NextRequest) {
 
   if (pathname.startsWith("/admin")) {
     if (!session?.isAdmin) {
-      return NextResponse.redirect(new URL("/houses", request.url));
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/houses`);
     }
   } else if (pathname.startsWith("/houses") || pathname.startsWith("/agent")) {
     if (!session) {
-      return NextResponse.redirect(new URL("/api/auth/login", request.url));
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/houses`);
     }
   }
 
