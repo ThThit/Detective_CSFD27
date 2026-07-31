@@ -112,7 +112,9 @@ export async function GET(request: NextRequest) {
 
   await setSession({ userId, isAdmin });
 
-  const response = NextResponse.redirect(new URL("/houses", request.url));
+  const response = NextResponse.redirect(
+    `${process.env.NEXT_PUBLIC_APP_URL}/houses`
+  );
   response.cookies.delete("oauth_state");
   response.cookies.delete("oauth_verifier");
   return response;
