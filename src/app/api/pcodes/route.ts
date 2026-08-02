@@ -56,11 +56,13 @@ export async function GET(request: Request) {
         id: seniorAlias.id,
         studentId: seniorAlias.studentId,
         displayName: seniorAlias.displayName,
+        nickname: seniorAlias.nickname,
       },
       junior: {
         id: juniorAlias.id,
         studentId: juniorAlias.studentId,
         displayName: juniorAlias.displayName,
+        nickname: juniorAlias.nickname,
         guessLeft: juniorAlias.guessLeft,
       },
     })

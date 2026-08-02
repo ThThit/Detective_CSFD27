@@ -1,6 +1,7 @@
 import { HOUSE_META } from "@/lib/constants/houses";
 import type { Hint, MenteeCase } from "@/types";
 import { FileItem } from "../house/FileItem";
+import { InkStamp } from "@/components/ui/InkStamp";
 import { HintCardInline } from "../agent/AccusationTerminal";
 
 type Props = {
@@ -34,6 +35,17 @@ export function HintsSection({ hints, cases }: Props) {
                 (isLeader ? "LDR" : isSenior ? "SR" : "JR") +
                 "-" +
                 mentee.studentId.slice(-2);
+              const isFailed = !isFound && mentee.guessLeft <= 0;
+              const statusColor = isFound
+                ? "#3a6a2a"
+                : isFailed
+                  ? "#2F241F"
+                  : "#8b2020";
+              const statusLabel = isFound
+                ? "Solved"
+                : isFailed
+                  ? "Failed"
+                  : "Open";
 
               return (
                 <FileItem
@@ -42,18 +54,24 @@ export function HintsSection({ hints, cases }: Props) {
                   color={houseMeta.color}
                   index={index}
                   badgeLabel={code}
-                >
-                  <div className="flex items-center gap-3">
-                    {/*<div
-                      className="absolute right-2.5 top-2 -rotate-6 px-[7px] py-0.5 text-[12px] min-[440px]:text-[10px] tracking-[1.5px] [font-family:'Special_Elite',monospace]"
+                  hideBadge
+                  beforeBadge={
+                    <InkStamp
+                      rotate={-8}
                       style={{
-                        border: `1.5px solid ${isFound ? "#3a6a2a" : "#8b2020"}`,
-                        color: isFound ? "#3a6a2a" : "#8b2020",
-                        opacity: isFound ? 1 : 0.7,
+                        fontSize: 8,
+                        padding: "2px 6px",
+                        letterSpacing: 1.5,
+                        border: `2.5px solid ${statusColor}`,
+                        color: statusColor,
+                        opacity: 0.85,
                       }}
                     >
-                      {isFound ? "SOLVED" : "OPEN"}
-                    </div>*/}
+                      {statusLabel}
+                    </InkStamp>
+                  }
+                >
+                  <div className="flex items-center gap-3">
                     <div
                       className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden border border-[rgba(47,36,31,0.15)] bg-[#D6CEBF] bg-cover bg-center"
                       style={{

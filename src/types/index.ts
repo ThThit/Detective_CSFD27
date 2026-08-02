@@ -51,7 +51,7 @@ export type PcodePair = {
 
 export type MenteeCase = {
   pcodeId: string;
-  mentee: PublicStudent;
+  mentee: PublicStudent & { guessLeft: number };
   isFound: boolean;
 };
 

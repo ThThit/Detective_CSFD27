@@ -112,7 +112,7 @@ export default async function AgentProfilePage({
       return [
         {
           pcodeId: p.id,
-          mentee: toPublicStudent(mentee),
+          mentee: { ...toPublicStudent(mentee), guessLeft: mentee.guessLeft },
           isFound: p.foundAt !== null,
         },
       ];

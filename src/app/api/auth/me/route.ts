@@ -47,7 +47,7 @@ export async function GET() {
         if (!menteeRow) return [];
         return [{
           pcodeId: p.id,
-          mentee: toPublicStudent(menteeRow),
+          mentee: { ...toPublicStudent(menteeRow), guessLeft: menteeRow.guessLeft },
           isFound: p.foundAt !== null,
         }];
       });

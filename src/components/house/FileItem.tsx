@@ -10,12 +10,16 @@ export function FileItem({
   children,
   color,
   badgeLabel = "File",
+  beforeBadge,
+  hideBadge = false,
 }: {
   index: number;
   children: ReactNode;
   href: string;
   color: string;
   badgeLabel?: string;
+  beforeBadge?: ReactNode;
+  hideBadge?: boolean;
 }) {
   return (
     <div
@@ -60,14 +64,17 @@ export function FileItem({
 
         <div className="px-4 pb-3.5 pt-4">{children}</div>
 
-        {/* Stamp */}
-        <div className="absolute right-2 top-2">
-          <InkStamp
-            rotate={8}
-            style={{ fontSize: 8, padding: "2px 6px", letterSpacing: 1.5 }}
-          >
-            {badgeLabel}
-          </InkStamp>
+        {/* Stamp(s) */}
+        <div className="absolute right-2 top-2 flex items-center gap-1.5">
+          {beforeBadge}
+          {!hideBadge && (
+            <InkStamp
+              rotate={8}
+              style={{ fontSize: 8, padding: "2px 6px", letterSpacing: 1.5 }}
+            >
+              {badgeLabel}
+            </InkStamp>
+          )}
         </div>
 
         {/* Paper grain */}
