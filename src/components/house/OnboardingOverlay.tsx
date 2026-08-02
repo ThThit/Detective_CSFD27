@@ -1,31 +1,42 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { HOUSE_META, type House } from "@/lib/constants/houses";
 import { COUNTRIES } from "@/lib/constants/countries";
 import { MascotAvatar } from "@/components/house/MascotAvatar";
 import { cn } from "@/lib/utils";
 
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png"]);
+
 type Props = {
   userHouse: House;
+  userId: string;
   initialNickname?: string | null;
   initialNationality?: string | null;
+  initialProfileUrl?: string | null;
 };
 
 export function OnboardingOverlay({
   userHouse,
+  userId,
   initialNickname,
   initialNationality,
+  initialProfileUrl,
 }: Props) {
   const [visible, setVisible] = useState(true);
   const [closing, setClosing] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(() =>
+    initialNickname && initialNationality ? 2 : 1,
+  );
   const [nickname, setNickname] = useState(initialNickname ?? "");
   const [nationality, setNationality] = useState(initialNationality ?? "");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [nationalityOpen, setNationalityOpen] = useState(false);
   const [nationalitySearch, setNationalitySearch] = useState("");
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const houseMeta = HOUSE_META[userHouse];
   const selectedCountry = COUNTRIES.find((c) => c.name === nationality);
@@ -56,11 +67,64 @@ export function OnboardingOverlay({
         body: JSON.stringify({ nickname: trimmed, nationality }),
       });
       if (res.ok) {
-        setStep(2);
+        setStep(initialProfileUrl ? 3 : 2);
       } else {
         const data = await res.json();
         setError(data.error ?? "Something went wrong. Try again.");
       }
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handlePhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+      setError("Please choose a JPEG or PNG image.");
+      event.target.value = "";
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("Image is too large (max 5MB).");
+      event.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => setError("Could not read the selected image.");
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        setError("Could not read the selected image.");
+        return;
+      }
+      setPhotoPreview(reader.result);
+      setError("");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function handleConfirmPhoto() {
+    if (!photoPreview) {
+      setError("Upload a photo to continue.");
+      return;
+    }
+    setError("");
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/students/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profilePic: photoPreview }),
+      });
+      if (res.ok) {
+        setStep(3);
+      } else {
+        const data = await res.json().catch(() => null);
+        setError(data?.error ?? "Something went wrong. Try again.");
+      }
+    } catch {
+      setError("Network error — please try again.");
     } finally {
       setSaving(false);
     }
@@ -88,10 +152,18 @@ export function OnboardingOverlay({
             : "animate-[slideUp_0.35s_ease-out_both]",
         )}
       >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png"
+          onChange={handlePhotoChange}
+          className="hidden"
+          tabIndex={-1}
+        />
         {step === 1 ? (
           <>
             <div className="mb-3.5 font-mono text-[8px] uppercase tracking-[4px] text-danger">
-              STEP 1 OF 2 · AGENT INTAKE
+              STEP 1 OF 3 · AGENT INTAKE
             </div>
             <div className="mb-1.5 font-display text-[18px] text-foreground">
               Register Your Details
@@ -226,10 +298,115 @@ export function OnboardingOverlay({
               </div>
             </button>
           </>
+        ) : step === 2 ? (
+          <>
+            <div className="mb-3.5 font-mono text-[8px] uppercase tracking-[4px] text-danger">
+              STEP 2 OF 3 · AGENT PHOTO
+            </div>
+            <div className="mb-1.5 font-display text-[18px] text-foreground">
+              Submit Your Photo
+            </div>
+            <div className="mb-[22px] text-[14px] leading-[1.6] text-muted">
+              Field agents require a photo on file for identification.
+            </div>
+
+            <div className="mb-3.5 flex justify-center">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  aria-label={
+                    photoPreview ? "Change profile photo" : "Upload profile photo"
+                  }
+                  className={cn(
+                    "relative flex size-[108px] cursor-pointer items-center justify-center overflow-hidden rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent",
+                    photoPreview
+                      ? "border-2 border-accent bg-background"
+                      : "border-2 border-dashed border-accent/40 bg-background",
+                  )}
+                  style={
+                    photoPreview
+                      ? {
+                          backgroundImage: `url("${photoPreview}")`,
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
+                        }
+                      : undefined
+                  }
+                >
+                  {!photoPreview && (
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="34"
+                      height="34"
+                      fill="none"
+                      stroke="#1C1A17"
+                      strokeWidth="1.3"
+                      className="opacity-35"
+                      aria-hidden
+                    >
+                      <circle cx="12" cy="8" r="3.4" />
+                      <path d="M4.5 20c1-4 4.2-6 7.5-6s6.5 2 7.5 6" />
+                    </svg>
+                  )}
+                  {photoPreview && (
+                    <>
+                      <div className="absolute top-[3px] left-[3px] w-2 h-2 border-t-[1.5px] border-l-[1.5px] border-accent" />
+                      <div className="absolute top-[3px] right-[3px] w-2 h-2 border-t-[1.5px] border-r-[1.5px] border-accent" />
+                      <div className="absolute bottom-[3px] left-[3px] w-2 h-2 border-b-[1.5px] border-l-[1.5px] border-accent" />
+                      <div className="absolute bottom-[3px] right-[3px] w-2 h-2 border-b-[1.5px] border-r-[1.5px] border-accent" />
+                    </>
+                  )}
+                </button>
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-1 -bottom-1 flex size-9 items-center justify-center rounded-full border-2 border-surface bg-accent"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="#EDE1C4"
+                    strokeWidth="1.8"
+                    aria-hidden
+                  >
+                    <path d="M4 8h3l1.5-2h7L17 8h3v11H4z" />
+                    <circle cx="12" cy="13.5" r="3.2" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mb-3.5 text-center font-mono text-[10px] tracking-[1px] text-danger">
+                ✕ {error}
+              </div>
+            )}
+
+            <button
+              onClick={handleConfirmPhoto}
+              disabled={!photoPreview || saving}
+              className={cn(
+                "w-full border-none bg-dark p-3.5 text-center",
+                !photoPreview || saving
+                  ? "cursor-not-allowed opacity-[.65]"
+                  : "cursor-pointer opacity-100",
+              )}
+            >
+              <div className="font-display text-[13px] tracking-[2px] text-[#D8C0A0]">
+                {saving ? "Uploading..." : "Continue"}
+              </div>
+            </button>
+          </>
         ) : (
           <div className="pt-6 text-center">
             <div className="animate-[revealPot_0.6s_ease-out_1.2s_both] border border-accent/30 bg-background p-5 opacity-0">
 
+              <div className="mb-2 font-mono text-[7px] tracking-[3px] text-danger uppercase">
+                STEP 3 OF 3 · DIVISION ASSIGNMENT
+              </div>
               <div className="mb-2 font-mono text-[8px] tracking-[3px] text-accent">
                 YOU HAVE BEEN ASSIGNED TO
               </div>

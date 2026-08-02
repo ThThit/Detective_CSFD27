@@ -15,7 +15,10 @@ export default async function MainLayout({
 
   const user = await getCurrentStudent();
   const needsOnboarding =
-    !!user && (user.nickname === null || user.nationality === null);
+    !!user &&
+    (user.nickname === null ||
+      user.nationality === null ||
+      user.profileUrl === null);
 
   return (
     <>
@@ -24,8 +27,10 @@ export default async function MainLayout({
       {needsOnboarding && user && (
         <OnboardingOverlay
           userHouse={user.house as House}
+          userId={user.id}
           initialNickname={user.nickname}
           initialNationality={user.nationality}
+          initialProfileUrl={user.profileUrl}
         />
       )}
     </>
