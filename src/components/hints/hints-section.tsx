@@ -131,7 +131,7 @@ export function HintsSection({ hints, cases }: Props) {
                       <HintCardInline
                         key={hint.id}
                         hint={hint}
-                        index={i + 1}
+                        index={i}
                         // variant="senior"
                       />
                     ))}
@@ -142,7 +142,7 @@ export function HintsSection({ hints, cases }: Props) {
                 <HintCardInline
                   key={hint.id}
                   hint={hint}
-                  index={i + 1}
+                  index={i}
                   // variant="senior"
                 />
               ))}
