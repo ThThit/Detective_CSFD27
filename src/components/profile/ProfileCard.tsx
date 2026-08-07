@@ -617,8 +617,11 @@ export function ProfileCard({ student, editable = false }: ProfileCardProps) {
               alias
             )}
           </h1>
-          <div className="text-[13px] text-accent mb-2.5 tracking-[1px]">
+          <div className="text-[13px] text-accent mb-1 tracking-[1px]">
             {currentStudent.displayName}
+          </div>
+          <div className="mb-2.5 font-mono text-[11px] text-muted tracking-[1.5px]">
+            ID · {currentStudent.studentId}
           </div>
           <div className="flex gap-1.5 flex-wrap mb-2.5">
             <div
