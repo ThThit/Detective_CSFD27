@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
+import { GUESS_DEADLINE } from '@/lib/constants/deadline';
 
 const TOTAL_ATTEMPTS = 3;
 
@@ -52,8 +54,10 @@ type StudentTableProps = {
 };
 
 export function StudentTable({ pairs, filter }: StudentTableProps) {
+  const [pastDeadline] = useState(() => Date.now() >= GUESS_DEADLINE.getTime());
+
   const filtered = pairs.filter((p) => {
-    const failed = p.foundAt === null && p.junior.guessLeft <= 0;
+    const failed = p.foundAt === null && (p.junior.guessLeft <= 0 || pastDeadline);
     if (filter === 'solved') return p.foundAt !== null;
     if (filter === 'failed') return failed;
     if (filter === 'open') return p.foundAt === null && !failed;
@@ -77,7 +81,7 @@ export function StudentTable({ pairs, filter }: StudentTableProps) {
       {/* Rows */}
       {filtered.map((pair, i) => {
         const solved = pair.foundAt !== null;
-        const failed = !solved && pair.junior.guessLeft <= 0;
+        const failed = !solved && (pair.junior.guessLeft <= 0 || pastDeadline);
         // guessLeft only decrements on a wrong guess, so add 1 for the
         // successful guess itself when solved.
         const attemptsUsed =

@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { GUESS_DEADLINE } from '@/lib/constants/deadline';
 
-const TARGET = new Date('2026-08-08T14:00:00+07:00');
+const TARGET = GUESS_DEADLINE;
 
 function getTimeLeft() {
   const diff = TARGET.getTime() - Date.now();

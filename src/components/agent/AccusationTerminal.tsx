@@ -2,7 +2,8 @@
 
 import type { Hint } from "@/types";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { GUESS_DEADLINE } from "@/lib/constants/deadline";
 
 type SolvedSenior = {
   displayName: string;
@@ -20,6 +21,46 @@ type AccusationTerminalProps = {
 };
 
 const TOTAL_ATTEMPTS = 3;
+
+function useMsUntilDeadline() {
+  const [msLeft, setMsLeft] = useState(
+    () => GUESS_DEADLINE.getTime() - Date.now(),
+  );
+  useEffect(() => {
+    const id = setInterval(() => {
+      setMsLeft(GUESS_DEADLINE.getTime() - Date.now());
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+  return msLeft;
+}
+
+function DeadlineStrip({ msLeft }: { msLeft: number }) {
+  const clamped = Math.max(0, msLeft);
+  const days = Math.floor(clamped / 86400000);
+  const hours = Math.floor((clamped % 86400000) / 3600000);
+  const minutes = Math.floor((clamped % 3600000) / 60000);
+  const seconds = Math.floor((clamped % 60000) / 1000);
+  const urgent = clamped <= 3600000;
+
+  const label =
+    days > 0
+      ? `${days}D ${String(hours).padStart(2, "0")}H ${String(minutes).padStart(2, "0")}M`
+      : `${String(hours).padStart(2, "0")}H ${String(minutes).padStart(2, "0")}M ${String(seconds).padStart(2, "0")}S`;
+
+  return (
+    <div className="flex items-center justify-between py-2 px-3.5 bg-dark/4 border-b border-danger/10">
+      <div className="text-[9px] text-muted-fg tracking-[2px] uppercase font-mono">
+        Case closes in
+      </div>
+      <div
+        className={`text-[12px] tracking-[1px] font-mono tabular-nums ${urgent ? "text-danger animate-[pulse_1s_step-end_infinite]" : "text-foreground"}`}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}
 
 export function AccusationTerminal({
   initialGuessLeft,
@@ -41,10 +82,13 @@ export function AccusationTerminal({
     initialSolvedAt ? new Date(initialSolvedAt) : new Date(),
   );
 
+  const msLeft = useMsUntilDeadline();
+  const isPastDeadline = msLeft <= 0;
+
   const attemptsUsed = TOTAL_ATTEMPTS - guessLeft;
 
   async function handleSubmit() {
-    if (loading) return;
+    if (loading || isPastDeadline) return;
     if (!/^\d{3}$/.test(input)) {
       setErrorMsg("ID must be exactly 3 digits.");
       setShaking(true);
@@ -182,6 +226,37 @@ export function AccusationTerminal({
     );
   }
 
+  // ── Deadline-expired state ─────────────────────────────────────────────────
+  if (isPastDeadline && !isFound) {
+    return (
+      <div className="py-4">
+        <div className="bg-dark/5 border border-dark/16 py-6 px-5 text-center mb-5">
+          <div className="font-display text-[18px] text-dark tracking-[2px] mb-2.5">
+            TIME OF DEATH: DEADLINE
+          </div>
+          <div className="text-[14px] text-muted font-serif italic leading-[1.6]">
+            The window for accusations has closed. This operative remains
+            unidentified.
+          </div>
+          <div className="text-[9px] text-muted-fg tracking-[2px] uppercase font-mono mt-3">
+            {guessLeft} of {TOTAL_ATTEMPTS} attempts unused
+          </div>
+        </div>
+
+        {initialHints.length > 0 && (
+          <>
+            <div className="text-[10px] text-muted-fg tracking-[3px] uppercase mb-2.5 font-mono">
+              EVIDENCE ON HAND
+            </div>
+            {initialHints.map((h, i) => (
+              <HintCardInline key={h.id} hint={h} index={i} />
+            ))}
+          </>
+        )}
+      </div>
+    );
+  }
+
   // ── Expired state ───────────────────────────────────────────────────────────
   if (guessLeft === 0 && !isFound) {
     return (
@@ -252,6 +327,8 @@ export function AccusationTerminal({
             </div>
           </div>
         </div>
+
+        <DeadlineStrip msLeft={msLeft} />
 
         {/* Input area */}
         <div className="py-3 px-3.5">

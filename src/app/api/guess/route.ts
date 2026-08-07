@@ -3,6 +3,7 @@ import { getSessionData } from "@/lib/auth";
 import { db } from "@/db";
 import { student, pcode } from "@/db/schema";
 import { eq, isNull, and, like, or } from "drizzle-orm";
+import { GUESS_DEADLINE } from "@/lib/constants/deadline";
 
 export async function POST(request: Request) {
   const session = await getSessionData();
@@ -30,6 +31,13 @@ export async function POST(request: Request) {
 
   if (user.role !== "junior") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  if (Date.now() >= GUESS_DEADLINE.getTime()) {
+    return NextResponse.json(
+      { error: "The deadline has passed. Accusations are no longer accepted." },
+      { status: 403 },
+    );
   }
 
   const [pcodeRow] = await db

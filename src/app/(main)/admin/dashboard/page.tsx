@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { StudentTable, type Filter } from '@/components/admin/student-table';
+import { GUESS_DEADLINE } from '@/lib/constants/deadline';
 
 type Pair = {
   id: string;
@@ -25,6 +26,7 @@ function DashboardContent() {
 
   const [pairs, setPairs] = useState<Pair[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pastDeadline] = useState(() => Date.now() >= GUESS_DEADLINE.getTime());
 
   const statusParam = searchParams.get('status');
   const filter: Filter = isFilter(statusParam) ? statusParam : 'unregistered';
@@ -49,8 +51,8 @@ function DashboardContent() {
 
   const unregistered = pairs.filter((p) => p.senior.nickname === null || p.junior.nickname === null).length;
   const solved       = pairs.filter((p) => p.foundAt !== null).length;
-  const failed       = pairs.filter((p) => p.foundAt === null && p.junior.guessLeft <= 0).length;
-  const open         = pairs.filter((p) => p.foundAt === null && p.junior.guessLeft > 0).length;
+  const failed       = pairs.filter((p) => p.foundAt === null && (p.junior.guessLeft <= 0 || pastDeadline)).length;
+  const open         = pairs.filter((p) => p.foundAt === null && p.junior.guessLeft > 0 && !pastDeadline).length;
 
   const filterBtn = (f: Filter) => {
     const active = filter === f;
