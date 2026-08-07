@@ -20,23 +20,31 @@ function PersonCell({
   displayName: string;
   nickname: string | null;
 }) {
+  const pending = nickname === null;
   return (
     <div style={{ fontFamily: "'Special Elite', monospace", letterSpacing: '0.5px', minWidth: 0, overflow: 'hidden' }}>
       <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        <Link href={`/agent/${id}`} style={{ color: '#1C1A17', fontSize: '11px', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-          {nickname ?? displayName}
+        <Link
+          href={`/agent/${id}`}
+          style={{
+            color: pending ? '#4a5566' : '#1C1A17',
+            fontSize: '11px',
+            fontStyle: pending ? 'italic' : 'normal',
+            textDecoration: pending ? 'none' : 'underline',
+            textUnderlineOffset: '2px',
+          }}
+        >
+          {pending ? 'Unregistered' : nickname}
         </Link>
       </div>
-      {nickname && (
-        <div style={{ color: '#A0907E', fontSize: '9px', fontStyle: 'italic', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {displayName}
-        </div>
-      )}
+      <div style={{ color: '#A0907E', fontSize: '9px', fontStyle: 'italic', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {displayName}
+      </div>
     </div>
   );
 }
 
-export type Filter = 'all' | 'solved' | 'open' | 'failed';
+export type Filter = 'unregistered' | 'solved' | 'open' | 'failed';
 
 type StudentTableProps = {
   pairs: Pair[];
@@ -49,6 +57,7 @@ export function StudentTable({ pairs, filter }: StudentTableProps) {
     if (filter === 'solved') return p.foundAt !== null;
     if (filter === 'failed') return failed;
     if (filter === 'open') return p.foundAt === null && !failed;
+    if (filter === 'unregistered') return p.senior.nickname === null || p.junior.nickname === null;
     return true;
   });
 
