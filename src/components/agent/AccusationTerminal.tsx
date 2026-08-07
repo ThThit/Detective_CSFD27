@@ -333,7 +333,7 @@ export function AccusationTerminal({
         {/* Input area */}
         <div className="py-3 px-3.5">
           <div className="text-[11px] text-foreground tracking-[2px] mb-2 font-mono">
-            ENTER LAST 3 DIGITS OF STUDENT ID:
+            ENTER LAST 3 DIGITS OF SENIOR STUDENT ID:
           </div>
 
           <div
